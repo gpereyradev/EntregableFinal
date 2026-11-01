@@ -1,0 +1,48 @@
+name: Nova Salud verification
+on: [push, pull_request]
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: nova_test
+          POSTGRES_USER: nova
+          POSTGRES_PASSWORD: test-only-password
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      APP_ENV: testing
+      APP_KEY: test-only-key-do-not-use-in-prod!
+      APP_DEMO: 'false'
+      DB_CONNECTION: pgsql
+      DB_URL: postgresql://nova:test-only-password@127.0.0.1:5432/nova_test
+      CACHE_STORE: array
+      SESSION_DRIVER: array
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, dom, xml, pdo_pgsql, pdo_sqlite, pcntl
+          coverage: none
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: composer install --no-interaction --prefer-dist
+        working-directory: backend
+      - run: php artisan migrate --force
+        working-directory: backend
+      - run: php vendor/bin/phpunit --no-progress
+        working-directory: backend
+      - run: php tests/concurrency.php
+        working-directory: backend
+      - run: npm ci --no-audit --no-fund && npm run build
+        working-directory: frontend

@@ -1,0 +1,9 @@
+{
+  "name": "nova-salud",
+  "private": true,
+  "scripts": {
+    "dev": "node infra/dev.mjs",
+    "build": "npm run build --prefix frontend",
+    "test": "cd backend && php vendor/bin/phpunit"
+  }
+}

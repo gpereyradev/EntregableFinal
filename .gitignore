@@ -1,0 +1,12 @@
+node_modules/
+vendor/
+.env
+.env.*
+!.env.example
+*.sqlite
+*.sqlite-*
+frontend/dist/
+backend/public/app/
+*.tsbuildinfo
+.openai/
+__pycache__/
