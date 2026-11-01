@@ -13,7 +13,7 @@ Fecha: 1 de noviembre de 2026. Todos los datos usados son ficticios.
 | Reintento / carrito cambiado / nueva venta idéntica | Node, lógica de claves del frontend | 3 pruebas de regresión correctas |
 | TypeScript y construcción de producción | Vite | Compilación correcta |
 
-Evidencia PostgreSQL y construcción: [ejecución de GitHub Actions](https://github.com/gpereyradev/EntregableFinal/actions/runs/41350895009). La verificación más reciente del repositorio incluye también las tres pruebas del frontend.
+Evidencia PostgreSQL y construcción: [ejecución de GitHub Actions](https://github.com/gpereyradev/EntregableFinal/actions/runs/41351279766). La verificación más reciente del repositorio incluye también las tres pruebas del frontend.
 
 La suite funcional comprueba sesión, usuario inactivo, permisos, productos únicos, validación monetaria, entradas, ajustes, stock insuficiente, FEFO, vencidos, vigencia el mismo día, producto inactivo, reintentos, anulación única, ventas propias, alertas, reportes sin anuladas, CSV, claves obligatorias y rollback cuando falla una segunda línea.
 
@@ -35,7 +35,7 @@ Se mantuvo el producto `QA-1101` como ejemplo visible y sus movimientos como evi
 
 ## Navegador
 
-Se comprobó la interfaz pública en Edge: ingreso, dashboard, alta de producto, entrada de lote y punto de venta con confirmación. Se revisaron consola, detalle de venta, anulación, alertas, reportes y vista móvil durante la entrega. Consultar el historial de esta entrega para las observaciones concretas. Las limitaciones que sigan pendientes se indican abajo; no se presentan como ejecutadas pruebas de campo con clientes reales.
+Se comprobó la interfaz pública en Edge: ingreso, dashboard, alta de producto, entrada de lote y punto de venta con confirmación. Se revisaron consola sin errores de la aplicación, detalle de venta, anulación con reposición, alertas, reportes y navegación móvil a 390 × 844 px. Se corrigieron el estado de la venta recién creada, la clave de una segunda venta idéntica y el acceso al perfil en pantallas de poca altura. No se realizaron pruebas de campo con clientes reales.
 
 ## Reproducir pruebas
 

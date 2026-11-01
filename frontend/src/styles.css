@@ -3109,3 +3109,14 @@ td strong {
   .catalog-card > p { font-size: 9px; }
   .top-product-body > div:first-child { font-size: 11px; }
 }
+.sidebar { overflow-y: auto; overflow-x: hidden; scrollbar-width: thin; }
+@media (max-height: 800px) {
+  .sidebar { padding-top: 22px; }
+  .sidebar > .brand { margin-bottom: 28px; }
+  .sidebar-section { margin-bottom: 8px; }
+  .nav-item { min-height: 36px; padding-top: 10px; padding-bottom: 10px; margin-bottom: 2px; }
+  .admin-label { margin-top: 20px; }
+  .sidebar-bottom { padding-top: 14px; }
+  .care-card { display: none; }
+  .profile { padding-top: 15px; padding-bottom: 15px; }
+}

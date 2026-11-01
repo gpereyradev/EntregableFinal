@@ -40,6 +40,10 @@ Se utiliza una conexión directa para las migraciones. Para esta demostración d
 
 El frontend usa `/app/assets/` y API relativa `/api`; no hay secretos en variables `VITE_*`. La configuración de cookies seguras requiere acceder mediante HTTPS. `/up` es el endpoint de salud de Laravel. La raíz comprueba que puede servir la aplicación y `/api/session` comprueba la disponibilidad de sesión.
 
+## Actualizaciones del repositorio
+
+El servicio se creó desde una URL pública de GitHub. En esta modalidad, Render puede mostrar `autoDeploy=yes` y aun así no recibir webhooks del proveedor. Durante esta entrega se verificó que los nuevos commits no creaban un despliegue automático y se lanzó manualmente la versión final. Para próximas actualizaciones, comprobar que exista un deploy para el commit y, si no existe, iniciarlo desde Render; alternativamente enlazar el proveedor Git en su panel. No crear otro servicio para actualizar este.
+
 ## Publicación y verificación
 
 Comprueba que el despliegue esté `live`; recibir un ID no significa que terminó. Abre la raíz, inicia sesión, registra una entrada y una venta; verifica el saldo y consulta el detalle. Prueba un vendedor e intenta una acción administrativa. Revisa los logs sin publicar secretos.
