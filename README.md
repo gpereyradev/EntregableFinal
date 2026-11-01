@@ -11,6 +11,7 @@ Aplicación fullstack del trabajo final **PIAD-527 — SENATI**. Centraliza prod
 - Transacciones PostgreSQL, bloqueo de productos y claves de idempotencia para ventas y movimientos.
 - Alertas de reposición y vencimiento; reportes por fecha y exportación CSV.
 - Datos ficticios de demostración, sin APIs externas ni datos personales reales.
+- Interfaz editorial adaptable, con temas claro, oscuro y automático; preferencia persistente en el navegador.
 
 ## Arquitectura
 

@@ -50,3 +50,9 @@ Cierra sesión con el icono junto a tu perfil. La sesión dura 120 minutos de in
 ## Actualización de las vistas
 
 Los datos se consultan automáticamente cada 30 segundos cuando la ventana está visible, al volver a ella y después de operaciones locales. El botón de actualización permite consultar antes. El carrito muestra los precios seleccionados; el comprobante y el total definitivo los recalcula el servidor con el precio vigente al confirmar.
+
+## Apariencia: claro, oscuro o sistema
+
+El selector de sol, luna y monitor está disponible en el inicio de sesión y en la barra superior. Elige **Tema oscuro** para activar la paleta oscura, **Tema claro** para la clara o **Tema del sistema** para seguir la configuración del dispositivo. La preferencia se conserva en ese navegador, incluso después de cerrar sesión o recargar, y se comparte entre sus pestañas. No cambia la cuenta ni los datos del inventario.
+
+El tema se aplica antes del primer render para evitar un destello claro al abrir en modo oscuro. Los reportes, gráficos, formularios, alertas, carrito y diálogos comparten la misma paleta. La impresión del comprobante conserva fondo blanco y texto oscuro en ambos modos.

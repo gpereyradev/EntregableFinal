@@ -1,4 +1,5 @@
-import {createOperationKey} from './operationKey';
+import { ThemeSwitcher } from "./theme";
+import { createOperationKey } from "./operationKey";
 import { useState, useEffect, useRef, useCallback, useId } from "react";
 import type { ReactNode, FormEvent } from "react";
 import {
@@ -408,21 +409,21 @@ function Chart({ data }: { data: Report["series"] }) {
         >
           <defs>
             <linearGradient id="area" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#137b6d" stopOpacity={0.2} />
-              <stop offset="100%" stopColor="#137b6d" stopOpacity={0} />
+              <stop offset="0%" stopColor="var(--chart)" stopOpacity={0.2} />
+              <stop offset="100%" stopColor="var(--chart)" stopOpacity={0} />
             </linearGradient>
           </defs>
           <CartesianGrid
             strokeDasharray="3 5"
             vertical={false}
-            stroke="#e7eeea"
+            stroke="var(--line)"
           />
           <XAxis
             dataKey="day"
             axisLine={false}
             tickLine={false}
             minTickGap={25}
-            tick={{ fill: "#8a9691", fontSize: 11 }}
+            tick={{ fill: "var(--muted)", fontSize: 11 }}
             tickFormatter={(d) =>
               new Date(d + "T12:00:00").toLocaleDateString("es-PE", {
                 day: "2-digit",
@@ -434,25 +435,27 @@ function Chart({ data }: { data: Report["series"] }) {
           <YAxis
             axisLine={false}
             tickLine={false}
-            tick={{ fill: "#8a9691", fontSize: 11 }}
+            tick={{ fill: "var(--muted)", fontSize: 11 }}
             tickFormatter={(v) => "S/ " + Number(v) / 100}
           />
           <Tooltip
             formatter={(v) => [money(Number(v)), "Ventas"]}
             labelFormatter={(v) => date(String(v))}
             contentStyle={{
-              borderRadius: 12,
-              border: "1px solid #e1e9e4",
+              borderRadius: 6,
+              border: "1px solid var(--line)",
+              background: "var(--panel)",
+              color: "var(--ink)",
               fontSize: 13,
             }}
           />
           <Area
             type="monotone"
             dataKey="total_cents"
-            stroke="#137b6d"
+            stroke="var(--chart)"
             strokeWidth={3}
             fill="url(#area)"
-            activeDot={{ r: 5, strokeWidth: 3, stroke: "#fff" }}
+            activeDot={{ r: 5, strokeWidth: 3, stroke: "var(--panel)" }}
           />
         </AreaChart>
       </ResponsiveContainer>
@@ -465,50 +468,71 @@ function Login({ onLogin }: { onLogin: (u: User) => void }) {
   return (
     <main className="login">
       <section className="login-story">
-        <Logo />
+        <div className="login-brand-row">
+          <Logo />
+          <span className="edition-label">SISTEMA DE GESTIÓN / 01</span>
+        </div>
         <div className="story-body">
-          <span className="eyebrow light">
-            <span /> CADA DETALLE CUENTA
-          </span>
+          <span className="eyebrow light">EL ORDEN TAMBIÉN ES CUIDADO</span>
           <h1>
-            Más cuidado.
+            Cada unidad.
             <br />
-            Menos complicaciones.
+            Cada venta.
+            <br />
+            <em>Bajo control.</em>
           </h1>
           <p>
-            El inventario en orden. La atención más ágil.
-            <br />
-            Tu botica, conectada de principio a fin.
+            Un solo espacio para el inventario, las ventas
+            <br className="desktop-break" /> y las decisiones de tu botica.
           </p>
-          <div className="pharmacy-art">
-            <div className="orbit one" />
-            <div className="orbit two" />
-            <span className="art-pill">
-              <Pill size={70} />
-            </span>
-            <div className="art-card">
-              <CheckCircle2 size={21} />
-              <div>
-                Todo en su lugar<small>Inventario, ventas y control</small>
-              </div>
-            </div>
-            <div className="art-cross">+</div>
-            <span className="art-dot" />
+          <div className="hero-index">
+            <span>01 / INVENTARIO</span>
+            <span>02 / VENTAS</span>
+            <span>03 / CONTROL</span>
           </div>
         </div>
+        <div className="hero-symbol" aria-hidden="true">
+          <svg viewBox="0 0 400 400" fill="none">
+            <path
+              d="M150 35H250V150H365V250H250V365H150V250H35V150H150V35Z"
+              stroke="currentColor"
+              strokeWidth="1"
+            />
+            <path
+              d="M165 50H235V165H350V235H235V350H165V235H50V165H165V50Z"
+              stroke="currentColor"
+              strokeWidth="1"
+            />
+            <path
+              d="M180 65H220V180H335V220H220V335H180V220H65V180H180V65Z"
+              stroke="currentColor"
+              strokeWidth="1"
+            />
+          </svg>
+          <span>NOVA SALUD / EST. 2026</span>
+        </div>
         <div className="story-footer">
-          <ShieldCheck size={17} /> Una base segura para una mejor atención{" "}
-          <span>01 / 01</span>
+          <span>INVENTARIO & VENTAS</span>
+          <span>
+            LIMA, PERÚ <ArrowUpRight size={14} />
+          </span>
         </div>
       </section>
       <section className="login-form">
-        <div className="mobile-logo">
-          <Logo />
+        <div className="login-tools">
+          <div className="mobile-logo">
+            <Logo />
+          </div>
+          <ThemeSwitcher />
         </div>
         <div className="login-form-inner">
-          <span className="eyebrow">BIENVENIDO A NOVA SALUD</span>
-          <h2>Tu día empieza aquí.</h2>
-          <p>Ingresa a tu espacio de trabajo.</p>
+          <span className="eyebrow">ACCESO AL EQUIPO</span>
+          <h2>
+            Todo listo.
+            <br />
+            <em>Entra y continúa.</em>
+          </h2>
+          <p>Tu operación de hoy empieza aquí.</p>
           <form
             onSubmit={async (e) => {
               e.preventDefault();
@@ -554,7 +578,7 @@ function Login({ onLogin }: { onLogin: (u: User) => void }) {
                 <LoaderCircle className="spin" size={18} />
               ) : (
                 <>
-                  Ingresar a mi espacio <ArrowRight size={18} />
+                  Iniciar sesión <ArrowUpRight size={19} />
                 </>
               )}
             </button>
@@ -670,7 +694,7 @@ export default function App() {
       )}
       <aside className={"sidebar " + (mobile ? "open" : "")}>
         <Logo />
-        <div className="sidebar-section">ESPACIO DE TRABAJO</div>
+        <div className="sidebar-section">OPERACIÓN</div>
         <nav>
           {nav.map((v) => {
             const Icon = icons[v];
@@ -690,7 +714,7 @@ export default function App() {
         </nav>
         {admin && (
           <>
-            <div className="sidebar-section admin-label">ADMINISTRACIÓN</div>
+            <div className="sidebar-section admin-label">ADMINISTRAR</div>
             <button
               className={"nav-item " + (view === "users" ? "active" : "")}
               onClick={() => navigate("users")}
@@ -701,20 +725,6 @@ export default function App() {
           </>
         )}
         <div className="sidebar-bottom">
-          <div className="care-card">
-            <span className="care-icon">
-              <Sparkles size={20} />
-            </span>
-            <strong>Todo bajo control.</strong>
-            <p>
-              Una buena atención empieza
-              <br />
-              con un inventario en orden.
-            </p>
-            <button onClick={() => navigate("help")}>
-              Conoce tu espacio <ArrowUpRight size={15} />
-            </button>
-          </div>
           <button
             className={"nav-item " + (view === "help" ? "active" : "")}
             onClick={() => navigate("help")}
@@ -767,6 +777,7 @@ export default function App() {
             </span>
           </div>
           <div className="topbar-right">
+            <ThemeSwitcher />
             <span className="today">
               <Clock3 size={14} />
               {new Date().toLocaleDateString("es-PE", {
@@ -816,7 +827,7 @@ export default function App() {
           <span>
             <span className="live-dot" /> Nova Salud · Datos conectados
           </span>
-          <span>Hecho para cuidar mejor.</span>
+          <span>Inventario · Ventas · Control</span>
         </footer>
       </div>
       {toast && (
@@ -888,16 +899,45 @@ function Dashboard({
   if (!d) return null;
   return (
     <>
-      <PageTitle
-        eyebrow="TU BOTICA, DE UN VISTAZO"
-        title="Un buen día para cuidar."
-        description="Así va Nova Salud. Cada movimiento, en su lugar."
-        action={
+      <section className="dashboard-hero">
+        <div className="dashboard-hero-copy">
+          <span className="eyebrow">NOVA SALUD / VISTA GENERAL</span>
+          <h1>
+            Tu botica,
+            <br />
+            <em>en orden.</em>
+          </h1>
+          <p>Ventas, existencias y lo que necesita tu atención.</p>
           <button className="button primary" onClick={() => navigate("pos")}>
-            <Plus size={18} /> Nueva venta
+            Registrar una venta <ArrowUpRight size={19} />
           </button>
-        }
-      />
+        </div>
+        <div className="today-brief">
+          <div className="brief-top">
+            <span>
+              <i className="live-dot" /> ESTADO DEL INVENTARIO
+            </span>
+            <span>01</span>
+          </div>
+          <strong>
+            {String(d.low_count).padStart(2, "0")}
+            <span>
+              productos
+              <br />
+              por reponer
+            </span>
+          </strong>
+          <p>
+            {d.out_count} agotados · {d.expiring_count} lotes próximos a vencer
+          </p>
+          <button onClick={() => navigate("alerts")}>
+            Revisar pendientes <ArrowUpRight size={18} />
+          </button>
+          <div className="brief-cross" aria-hidden="true">
+            +
+          </div>
+        </div>
+      </section>
       <div className="overview-meta">
         <span className="section-kicker">
           <span className="live-dot" /> Resumen de hoy
@@ -940,7 +980,7 @@ function Dashboard({
         <section className="panel sales-chart">
           <div className="panel-header">
             <div>
-              <h2>El pulso de tus ventas</h2>
+              <h2>Ventas de la semana</h2>
               <p>Importes de ventas confirmadas</p>
             </div>
             <span className="period-chip">
@@ -956,7 +996,7 @@ function Dashboard({
         <section className="panel top-products">
           <div className="panel-header">
             <div>
-              <h2>Los más vendidos</h2>
+              <h2>Productos más vendidos</h2>
               <p>Unidades · últimos 7 días</p>
             </div>
             <span className="mini-icon">
@@ -1010,29 +1050,26 @@ function Dashboard({
           <SalesTable rows={d.recent_sales} openSale={openSale} />
         </section>
         <section className="replenish">
-          <div className="replenish-icon">
-            <PackagePlus size={25} />
+          <div className="replenish-heading">
+            <PackagePlus size={24} />
+            <span className="eyebrow">INVENTARIO / REPOSICIÓN</span>
           </div>
-          <span className="eyebrow">UN PASO ADELANTE</span>
           <h2>
-            Que nunca falte
+            La próxima
             <br />
-            lo importante.
+            <em>prioridad.</em>
           </h2>
           <p>
             {d.low_count
-              ? `${d.low_count} productos necesitan reposición. Revisa las alertas para planificar tu próxima entrada.`
-              : "Tu inventario está por encima de los mínimos configurados."}
+              ? `${d.low_count} productos están en el mínimo o por debajo. Consulta el detalle antes de tu próxima entrada.`
+              : "Todos los productos están por encima del mínimo configurado."}
           </p>
           <button
             className="button secondary"
-            onClick={() => navigate("alerts")}
+            onClick={() => navigate("inventory")}
           >
-            Revisar inventario <ArrowRight size={16} />
+            Abrir inventario <ArrowUpRight size={17} />
           </button>
-          <div className="replenish-decoration">
-            <Pill size={96} />
-          </div>
         </section>
       </div>
     </>
@@ -1628,7 +1665,7 @@ function POS({ onSale }: { onSale: (s: Sale) => void }) {
       <PageTitle
         eyebrow="ATENCIÓN MÁS ÁGIL"
         title="Punto de venta"
-        description="Busca, agrega y confirma. Nosotros ordenamos el resto."
+        description="Selecciona productos, revisa el pedido y registra la venta."
       />
       <div className="pos-layout">
         <section className="pos-catalog">
