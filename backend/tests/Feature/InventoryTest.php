@@ -103,7 +103,7 @@ class InventoryTest extends TestCase
     public function test_sale_uses_integer_cents_and_historical_price(): void
     {
         $b = $this->batch(10);
-        $r = $this->sell(3)->assertCreated()->assertJsonPath('sale.total_cents', 315);
+        $r = $this->sell(3)->assertCreated()->assertJsonPath('sale.total_cents', 315)->assertJsonPath('sale.status', 'completed');
         $this->assertEquals(7, $b->fresh()->quantity);
         $this->product->update(['price_cents' => 990]);
         $this->assertEquals(105, SaleItem::first()->unit_price_cents);
@@ -226,8 +226,8 @@ class InventoryTest extends TestCase
         $b = $this->batch(10);
         $p = Product::create(['code' => 'EMPTY', 'name' => 'Sin stock', 'category_id' => $this->product->category_id, 'presentation' => 'Unidad', 'price_cents' => 100, 'min_stock' => 1]);
         $this->actingAs($this->seller)->postJson('/api/sales', ['payment_method' => 'cash', 'items' => [['product_id' => $this->product->id, 'quantity' => 2], ['product_id' => $p->id, 'quantity' => 1]]], ['Idempotency-Key' => (string) Str::uuid()])->assertUnprocessable();
-        $this->assertEquals(10,$b->fresh()->quantity);
-        $this->assertEquals(0,Sale::count());
-        $this->assertEquals(0,Movement::count());
+        $this->assertEquals(10, $b->fresh()->quantity);
+        $this->assertEquals(0, Sale::count());
+        $this->assertEquals(0, Movement::count());
     }
 }

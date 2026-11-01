@@ -44,5 +44,5 @@ jobs:
         working-directory: backend
       - run: php tests/concurrency.php
         working-directory: backend
-      - run: npm ci --no-audit --no-fund && npm run build
+      - run: npm ci --no-audit --no-fund && npm test && npm run build
         working-directory: frontend

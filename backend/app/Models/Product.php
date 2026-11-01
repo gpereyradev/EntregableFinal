@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
+    protected $attributes = ['active' => true, 'min_stock' => 10];
+
     protected $fillable = ['code', 'name', 'category_id', 'presentation', 'description', 'price_cents', 'min_stock', 'active'];
 
     public function category()

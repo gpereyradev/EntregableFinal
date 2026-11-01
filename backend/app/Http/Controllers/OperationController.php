@@ -52,7 +52,7 @@ class OperationController extends Controller
             $q->where('status', $s);
         }
 
-return $q->orderByDesc('id')->paginate(20);
+        return $q->orderByDesc('id')->paginate(20);
     }
 
     public function show(Request $r, Sale $sale)
@@ -69,9 +69,9 @@ return $q->orderByDesc('id')->paginate(20);
         if ($p = $d['product_id'] ?? null) {
             $q->whereHas('batch', fn ($q) => $q->where('product_id', $p));
         }if ($t = $d['type'] ?? null) {
-            $q->where('type',$t);
+            $q->where('type', $t);
         }
 
-return $q->orderByDesc('id')->paginate(20);
+        return $q->orderByDesc('id')->paginate(20);
     }
 }

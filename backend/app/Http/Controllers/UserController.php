@@ -35,7 +35,7 @@ class UserController extends Controller
             unset($d['password']);
         }
 
-return DB::transaction(function () use ($r, $user, $d) {
+        return DB::transaction(function () use ($r, $user, $d) {
             $u = User::whereKey($user->id)->lockForUpdate()->firstOrFail();
             $u->update($d);
             Audit::create(['user_id' => $r->user()->id, 'action' => 'user.updated', 'subject' => 'user:'.$u->id]);

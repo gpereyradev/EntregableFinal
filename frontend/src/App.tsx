@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import {createOperationKey} from './operationKey';
+import { useState, useEffect, useRef, useCallback, useId } from "react";
 import type { ReactNode, FormEvent } from "react";
 import {
   Activity,
@@ -235,6 +236,7 @@ function Modal({
   wide?: boolean;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
+  const titleId = useId();
   useEffect(() => {
     const d = ref.current;
     d?.showModal();
@@ -245,6 +247,7 @@ function Modal({
   return (
     <dialog
       ref={ref}
+      aria-labelledby={titleId}
       className={"modal " + (wide ? "wide" : "")}
       onCancel={(e) => {
         e.preventDefault();
@@ -256,7 +259,7 @@ function Modal({
     >
       <div className="modal-head">
         <div>
-          <h2>{title}</h2>
+          <h2 id={titleId}>{title}</h2>
           {subtitle && <p>{subtitle}</p>}
         </div>
         <button className="icon-button" aria-label="Cerrar" onClick={onClose}>
@@ -342,13 +345,9 @@ function Form({
   );
 }
 function useIdempotency() {
-  const last = useRef({ body: "", key: "" });
-  return (payload: unknown) => {
-    const b = JSON.stringify(payload);
-    if (last.current.body !== b)
-      last.current = { body: b, key: crypto.randomUUID() };
-    return last.current.key;
-  };
+  const key = useRef<ReturnType<typeof createOperationKey> | null>(null);
+  if (!key.current) key.current = createOperationKey();
+  return key.current;
 }
 function Pagination({
   page,
@@ -1611,6 +1610,7 @@ function POS({ onSale }: { onSale: (s: Sale) => void }) {
     };
     try {
       const result = await api<{ sale: Sale }>("sales", "POST", d, key(d));
+      key.complete();
       setCart([]);
       setConfirm(false);
       refresh();

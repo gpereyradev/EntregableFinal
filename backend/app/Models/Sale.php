@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Sale extends Model
 {
+    protected $attributes = ['status' => 'completed', 'demo' => false];
+
     protected $fillable = ['user_id', 'payment_method', 'total_cents', 'status', 'demo', 'cancelled_at', 'cancelled_by', 'cancel_reason', 'created_at'];
 
     public function items()

@@ -15,6 +15,6 @@ class ApiSession
             return response()->json(['message' => 'Inicia sesión para continuar.'], 401);
         }
 
-return $next($r);
+        return $next($r);
     }
 }

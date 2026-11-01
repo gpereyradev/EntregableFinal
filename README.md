@@ -14,6 +14,8 @@ Aplicación fullstack del trabajo final **PIAD-527 — SENATI**. Centraliza prod
 
 ## Arquitectura
 
+**Aplicación:** https://nova-salud-gpereyradev.onrender.com/
+
 `frontend/`: React 19 + TypeScript + Vite + Tailwind 4, Lucide y Recharts.  
 `backend/`: Laravel 12 / PHP 8.3+, PostgreSQL 17, API REST y sesiones en base de datos.  
 `infra/`: construcción y ejecución en Render. Apache sirve la SPA y la API en el mismo origen HTTPS.

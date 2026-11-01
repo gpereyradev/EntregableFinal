@@ -103,7 +103,7 @@ class InventoryService
         $sale->update(['total_cents' => $total]);
         Audit::create(['user_id' => $actor->id, 'action' => 'sale.created', 'subject' => 'sale:'.$sale->id, 'metadata' => ['total_cents' => $total]]);
 
-        return ['message' => 'Venta registrada.', 'sale' => $sale->load('items.allocations.batch', 'user:id,name')->toArray()];
+        return ['message' => 'Venta registrada.', 'sale' => $sale->fresh()->load('items.allocations.batch', 'user:id,name')->toArray()];
     }
 
     public function cancel(User $actor, int $id, string $reason): array
@@ -122,6 +122,6 @@ class InventoryService
         $sale->update(['status' => 'cancelled', 'cancelled_by' => $actor->id, 'cancelled_at' => now(), 'cancel_reason' => $reason]);
         Audit::create(['user_id' => $actor->id, 'action' => 'sale.cancelled', 'subject' => 'sale:'.$sale->id, 'metadata' => ['reason' => $reason]]);
 
-        return ['message' => 'Venta anulada. Existencias repuestas una sola vez.', 'sale' => $sale->fresh()->load('items.allocations.batch','user:id,name','canceller:id,name')->toArray()];
+        return ['message' => 'Venta anulada. Existencias repuestas una sola vez.', 'sale' => $sale->fresh()->load('items.allocations.batch', 'user:id,name', 'canceller:id,name')->toArray()];
     }
 }
