@@ -470,46 +470,124 @@ function Login({ onLogin }: { onLogin: (u: User) => void }) {
       <section className="login-story">
         <div className="login-brand-row">
           <Logo />
-          <span className="edition-label">SISTEMA DE GESTIÓN / 01</span>
+          <span className="edition-label">TU ESPACIO DE TRABAJO</span>
         </div>
         <div className="story-body">
-          <span className="eyebrow light">EL ORDEN TAMBIÉN ES CUIDADO</span>
+          <span className="eyebrow light">UN BUEN DÍA EMPIEZA CON ORDEN</span>
           <h1>
-            Cada unidad.
+            Tu botica,
             <br />
-            Cada venta.
-            <br />
-            <em>Bajo control.</em>
+            <span className="heading-accent">más simple.</span>
           </h1>
           <p>
-            Un solo espacio para el inventario, las ventas
-            <br className="desktop-break" /> y las decisiones de tu botica.
+            Tu inventario al día. Tus ventas, sin vueltas.
+            <br className="desktop-break" /> Todo lo que necesitas, en un solo
+            lugar.
           </p>
           <div className="hero-index">
-            <span>01 / INVENTARIO</span>
-            <span>02 / VENTAS</span>
-            <span>03 / CONTROL</span>
+            <span>Inventario al día</span>
+            <span>Ventas más ágiles</span>
+            <span>Todo conectado</span>
           </div>
         </div>
         <div className="hero-symbol" aria-hidden="true">
-          <svg viewBox="0 0 400 400" fill="none">
-            <path
-              d="M150 35H250V150H365V250H250V365H150V250H35V150H150V35Z"
+          <svg viewBox="0 0 340 270" fill="none">
+            <ellipse
+              cx="172"
+              cy="251"
+              rx="140"
+              ry="12"
+              fill="currentColor"
+              opacity=".08"
+            />
+            <rect
+              x="60"
+              y="89"
+              width="226"
+              height="155"
+              rx="17"
+              fill="var(--panel)"
               stroke="currentColor"
-              strokeWidth="1"
+              strokeWidth="2"
             />
             <path
-              d="M165 50H235V165H350V235H235V350H165V235H50V165H165V50Z"
-              stroke="currentColor"
-              strokeWidth="1"
+              d="M45 102C45 94 49 87 55 83L85 62H255L286 83C292 87 296 94 296 102V119H45V102Z"
+              fill="currentColor"
+              opacity=".22"
             />
             <path
-              d="M180 65H220V180H335V220H220V335H180V220H65V180H180V65Z"
+              d="M45 118H297"
               stroke="currentColor"
-              strokeWidth="1"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+            <rect
+              x="81"
+              y="144"
+              width="79"
+              height="66"
+              rx="10"
+              fill="var(--login-hero)"
+            />
+            <rect
+              x="184"
+              y="142"
+              width="71"
+              height="102"
+              rx="11"
+              fill="var(--login-hero)"
+              stroke="currentColor"
+              strokeWidth="2"
+            />
+            <path
+              d="M239 192V204M120 155V199M93 177H148"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              opacity=".45"
+            />
+            <rect
+              x="135"
+              y="20"
+              width="74"
+              height="73"
+              rx="22"
+              fill="currentColor"
+            />
+            <path
+              d="M172 39V74M154 56H190"
+              stroke="var(--panel)"
+              strokeWidth="10"
+              strokeLinecap="round"
+            />
+            <path
+              d="M39 214C22 192 20 174 34 165C49 156 62 174 53 197C50 205 44 212 39 214Z"
+              fill="currentColor"
+              opacity=".4"
+            />
+            <path
+              d="M40 212V242"
+              stroke="currentColor"
+              strokeWidth="3"
+              strokeLinecap="round"
+            />
+            <rect
+              x="28"
+              y="229"
+              width="26"
+              height="19"
+              rx="6"
+              fill="currentColor"
+              opacity=".6"
+            />
+            <path
+              d="M295 51L303 43M302 72H314M280 36V25"
+              stroke="currentColor"
+              strokeWidth="3"
+              strokeLinecap="round"
+              opacity=".65"
             />
           </svg>
-          <span>NOVA SALUD / EST. 2026</span>
         </div>
         <div className="story-footer">
           <span>INVENTARIO & VENTAS</span>
@@ -527,12 +605,8 @@ function Login({ onLogin }: { onLogin: (u: User) => void }) {
         </div>
         <div className="login-form-inner">
           <span className="eyebrow">ACCESO AL EQUIPO</span>
-          <h2>
-            Todo listo.
-            <br />
-            <em>Entra y continúa.</em>
-          </h2>
-          <p>Tu operación de hoy empieza aquí.</p>
+          <h2>Hola de nuevo.</h2>
+          <p>Inicia sesión y sigue donde lo dejaste.</p>
           <form
             onSubmit={async (e) => {
               e.preventDefault();
@@ -901,15 +975,15 @@ function Dashboard({
     <>
       <section className="dashboard-hero">
         <div className="dashboard-hero-copy">
-          <span className="eyebrow">NOVA SALUD / VISTA GENERAL</span>
+          <span className="eyebrow">TU ESPACIO DE TRABAJO</span>
           <h1>
             Tu botica,
             <br />
-            <em>en orden.</em>
+            <span className="heading-accent">en orden.</span>
           </h1>
           <p>Ventas, existencias y lo que necesita tu atención.</p>
           <button className="button primary" onClick={() => navigate("pos")}>
-            Registrar una venta <ArrowUpRight size={19} />
+            Nueva venta <ArrowUpRight size={19} />
           </button>
         </div>
         <div className="today-brief">
@@ -1052,12 +1126,12 @@ function Dashboard({
         <section className="replenish">
           <div className="replenish-heading">
             <PackagePlus size={24} />
-            <span className="eyebrow">INVENTARIO / REPOSICIÓN</span>
+            <span className="eyebrow">PARA TU PRÓXIMA REPOSICIÓN</span>
           </div>
           <h2>
             La próxima
             <br />
-            <em>prioridad.</em>
+            <span className="heading-accent">prioridad.</span>
           </h2>
           <p>
             {d.low_count

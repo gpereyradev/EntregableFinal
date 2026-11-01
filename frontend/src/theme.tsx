@@ -29,7 +29,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       document.documentElement.style.colorScheme = theme;
       document
         .querySelector('meta[name="theme-color"]')
-        ?.setAttribute("content", theme === "dark" ? "#111715" : "#f2f2eb");
+        ?.setAttribute("content", theme === "dark" ? "#0d1724" : "#f5f8fc");
     };
     apply();
     try {
