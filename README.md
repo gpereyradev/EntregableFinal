@@ -75,6 +75,7 @@ La suite usa SQLite en memoria, clave de cifrado de prueba y datos aislados. No 
 | [Contrato OpenAPI](docs/openapi.yaml) | API, autenticación, permisos y cuerpos de datos |
 | [Ejemplos API](docs/API.md) | Solicitudes y respuestas para continuar el trabajo |
 | [Manual de usuario](docs/MANUAL.md) | Uso de cada módulo |
+| [Diseño y temas](docs/DISENO.md) | Identidad visual y modos claro, oscuro y automático |
 | [Integraciones](INTEGRACIONES.md) | Puntos de extensión para el compañero |
 | [Preguntas guía y competencias](docs/ACADEMICO.md) | Sustento del caso, métricas y competencias |
 | [Guion de exposición](docs/EXPOSICION.md) | Recorrido sugerido para la demostración |
