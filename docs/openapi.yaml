@@ -1,0 +1,1625 @@
+openapi: 3.0.3
+info:
+  title: Nova Salud API interna
+  version: 1.0.0
+  description: API Laravel con sesión de mismo origen y CSRF. Sin proveedores externos.
+    Importes enteros en céntimos de PEN. Zona horaria America/Lima. Los errores inesperados
+    no exponen trazas en producción.
+servers:
+- url: https://nova-salud-gpereyradev.onrender.com/api
+- url: http://localhost:8000/api
+tags:
+- name: Sesión
+- name: Operaciones
+- name: Administración
+paths:
+  /session:
+    get:
+      summary: Obtener sesión y token CSRF
+      description: ''
+      operationId: get_session
+      tags:
+      - Sesión
+      responses:
+        '200':
+          description: Operación correcta
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    allOf:
+                    - $ref: '#/components/schemas/User'
+                    nullable: true
+                  csrf_token: &id001
+                    type: string
+                  demo: &id008
+                    type: boolean
+        '422':
+          description: Validación rechazada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security: []
+      parameters: []
+  /login:
+    post:
+      summary: Iniciar sesión
+      description: Máximo 6 intentos por minuto; regenera la sesión.
+      operationId: post_login
+      tags:
+      - Sesión
+      responses:
+        '200':
+          description: Operación correcta
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+                  csrf_token: *id001
+        '422':
+          description: Validación rechazada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '419':
+          description: CSRF inválido; renovar sesión y reintentar con la misma clave
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Límite de solicitudes; esperar antes de reintentar
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security: []
+      parameters:
+      - &id002
+        name: X-CSRF-TOKEN
+        in: header
+        required: true
+        schema: *id001
+        description: csrf_token obtenido de GET /session; renovado al iniciar/cerrar
+          sesión.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password: *id001
+              required:
+              - email
+              - password
+  /logout:
+    post:
+      summary: Cerrar sesión
+      description: ''
+      operationId: post_logout
+      tags:
+      - Operaciones
+      responses:
+        '200':
+          description: Operación correcta
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: *id001
+                  csrf_token: *id001
+        '422':
+          description: Validación rechazada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '419':
+          description: CSRF inválido; renovar sesión y reintentar con la misma clave
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Sesión ausente o usuario inactivo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Permiso insuficiente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - SessionCookie: []
+      parameters:
+      - *id002
+  /categories:
+    get:
+      summary: Listar categorías
+      description: ''
+      operationId: get_categories
+      tags:
+      - Operaciones
+      responses:
+        '200':
+          description: Operación correcta
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+        '422':
+          description: Validación rechazada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Sesión ausente o usuario inactivo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Permiso insuficiente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - SessionCookie: []
+      parameters: []
+    post:
+      summary: Crear categoría
+      description: Solo administrador.
+      operationId: post_categories
+      tags:
+      - Administración
+      responses:
+        '201':
+          description: Operación correcta
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        '422':
+          description: Validación rechazada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '419':
+          description: CSRF inválido; renovar sesión y reintentar con la misma clave
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Sesión ausente o usuario inactivo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Permiso insuficiente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - SessionCookie: []
+      parameters:
+      - *id002
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  maxLength: 80
+              required:
+              - name
+  /products:
+    get:
+      summary: Buscar productos
+      description: 'Vendedor: solo productos activos. low incluye disponibilidad igual
+        o inferior al mínimo.'
+      operationId: get_products
+      tags:
+      - Operaciones
+      responses:
+        '200':
+          description: Operación correcta
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductPage'
+        '422':
+          description: Validación rechazada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Sesión ausente o usuario inactivo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Permiso insuficiente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - SessionCookie: []
+      parameters:
+      - &id003
+        name: page
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+        description: ''
+      - name: search
+        in: query
+        schema: *id001
+        description: Nombre o código, sin distinguir mayúsculas.
+      - name: category_id
+        in: query
+        schema: &id004
+          type: integer
+        description: ''
+      - name: status
+        in: query
+        schema:
+          type: string
+          enum:
+          - all
+          - low
+          - out
+          - inactive
+          default: all
+        description: ''
+      - name: per_page
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 20
+        description: ''
+    post:
+      summary: Crear producto sin existencias
+      description: Solo administrador.
+      operationId: post_products
+      tags:
+      - Administración
+      responses:
+        '201':
+          description: Operación correcta
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '422':
+          description: Validación rechazada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '419':
+          description: CSRF inválido; renovar sesión y reintentar con la misma clave
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Sesión ausente o usuario inactivo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Permiso insuficiente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - SessionCookie: []
+      parameters:
+      - *id002
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductInput'
+  /products/{product}:
+    get:
+      summary: Consultar producto y lotes
+      description: ''
+      operationId: get_products_product
+      tags:
+      - Operaciones
+      responses:
+        '200':
+          description: Operación correcta
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '422':
+          description: Validación rechazada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Sesión ausente o usuario inactivo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Permiso insuficiente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Registro inexistente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - SessionCookie: []
+      parameters:
+      - name: product
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+    put:
+      summary: Editar o desactivar producto
+      description: Solo administrador.
+      operationId: put_products_product
+      tags:
+      - Administración
+      responses:
+        '200':
+          description: Operación correcta
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '422':
+          description: Validación rechazada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '419':
+          description: CSRF inválido; renovar sesión y reintentar con la misma clave
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Sesión ausente o usuario inactivo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Permiso insuficiente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Registro inexistente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - SessionCookie: []
+      parameters:
+      - name: product
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+      - *id002
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductInput'
+  /stock:
+    post:
+      summary: Registrar entrada o ajuste
+      description: Solo administrador. Operación atómica; no permite saldos negativos.
+        Máximo 60 solicitudes por minuto.
+      operationId: post_stock
+      tags:
+      - Administración
+      responses:
+        '201':
+          description: Operación correcta
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: *id001
+                  batch:
+                    $ref: '#/components/schemas/Batch'
+        '422':
+          description: Validación rechazada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '419':
+          description: CSRF inválido; renovar sesión y reintentar con la misma clave
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Conflicto de idempotencia o venta ya anulada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Sesión ausente o usuario inactivo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Permiso insuficiente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Límite de solicitudes; esperar antes de reintentar
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - SessionCookie: []
+      parameters:
+      - *id002
+      - &id005
+        name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: 'Mantener la misma clave al reenviar el mismo cuerpo. Otra solicitud
+          con esa clave: 409.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StockInput'
+  /movements:
+    get:
+      summary: Consultar movimientos
+      description: Solo administrador.
+      operationId: get_movements
+      tags:
+      - Administración
+      responses:
+        '200':
+          description: Operación correcta
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovementPage'
+        '422':
+          description: Validación rechazada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Sesión ausente o usuario inactivo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Permiso insuficiente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - SessionCookie: []
+      parameters:
+      - *id003
+      - name: product_id
+        in: query
+        schema: *id004
+        description: ''
+      - name: type
+        in: query
+        schema:
+          type: string
+          enum:
+          - entry
+          - adjustment
+          - sale
+          - void
+        description: ''
+  /sales:
+    get:
+      summary: Consultar historial de ventas
+      description: 'Vendedor: solo ventas propias. Administrador: todas.'
+      operationId: get_sales
+      tags:
+      - Operaciones
+      responses:
+        '200':
+          description: Operación correcta
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SalePage'
+        '422':
+          description: Validación rechazada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Sesión ausente o usuario inactivo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Permiso insuficiente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - SessionCookie: []
+      parameters:
+      - *id003
+      - &id006
+        name: from
+        in: query
+        schema:
+          type: string
+          format: date
+        description: ''
+      - &id007
+        name: to
+        in: query
+        schema:
+          type: string
+          format: date
+        description: Igual o posterior a from.
+      - name: status
+        in: query
+        schema:
+          type: string
+          enum:
+          - completed
+          - cancelled
+        description: ''
+    post:
+      summary: Confirmar venta y descontar stock FEFO
+      description: Calcula precios en servidor; bloquea productos y lotes, descarta
+        vencidos, revierte todo ante stock insuficiente. Máximo 60 solicitudes por
+        minuto.
+      operationId: post_sales
+      tags:
+      - Operaciones
+      responses:
+        '201':
+          description: Operación correcta
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: *id001
+                  sale:
+                    $ref: '#/components/schemas/Sale'
+        '422':
+          description: Validación rechazada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '419':
+          description: CSRF inválido; renovar sesión y reintentar con la misma clave
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Conflicto de idempotencia o venta ya anulada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Sesión ausente o usuario inactivo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Permiso insuficiente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Límite de solicitudes; esperar antes de reintentar
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - SessionCookie: []
+      parameters:
+      - *id002
+      - *id005
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SaleInput'
+  /sales/{sale}:
+    get:
+      summary: Consultar detalle y lotes aplicados
+      description: 'Vendedor: solo ventas propias.'
+      operationId: get_sales_sale
+      tags:
+      - Operaciones
+      responses:
+        '200':
+          description: Operación correcta
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sale'
+        '422':
+          description: Validación rechazada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Sesión ausente o usuario inactivo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Permiso insuficiente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Registro inexistente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - SessionCookie: []
+      parameters:
+      - name: sale
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+  /sales/{sale}/cancel:
+    post:
+      summary: Anular venta y reponer stock una sola vez
+      description: Solo administrador.
+      operationId: post_sales_sale_cancel
+      tags:
+      - Administración
+      responses:
+        '200':
+          description: Operación correcta
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: *id001
+                  sale:
+                    $ref: '#/components/schemas/Sale'
+        '422':
+          description: Validación rechazada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '419':
+          description: CSRF inválido; renovar sesión y reintentar con la misma clave
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Conflicto de idempotencia o venta ya anulada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Sesión ausente o usuario inactivo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Permiso insuficiente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Registro inexistente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - SessionCookie: []
+      parameters:
+      - name: sale
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+      - *id002
+      - *id005
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+                  minLength: 5
+                  maxLength: 255
+              required:
+              - reason
+  /alerts:
+    get:
+      summary: Calcular alertas actuales
+      description: Solo administrador.
+      operationId: get_alerts
+      tags:
+      - Administración
+      responses:
+        '200':
+          description: Operación correcta
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Alerts'
+        '422':
+          description: Validación rechazada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Sesión ausente o usuario inactivo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Permiso insuficiente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - SessionCookie: []
+      parameters: []
+  /reports:
+    get:
+      summary: Resumen de ventas por período
+      description: 'Solo administrador. Hasta 366 días. Sin fechas: últimos 7 días.
+        Excluye ventas anuladas de importes, conteos y ranking.'
+      operationId: get_reports
+      tags:
+      - Administración
+      responses:
+        '200':
+          description: Operación correcta
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Report'
+        '422':
+          description: Validación rechazada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Sesión ausente o usuario inactivo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Permiso insuficiente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - SessionCookie: []
+      parameters:
+      - *id006
+      - *id007
+  /reports/export:
+    get:
+      summary: Descargar reporte diario CSV
+      description: Solo administrador.
+      operationId: get_reports_export
+      tags:
+      - Administración
+      responses:
+        '200':
+          description: CSV UTF-8 con BOM, columnas Fecha, Ventas confirmadas e Importe
+            (PEN).
+          content:
+            text/csv:
+              schema: *id001
+        '422':
+          description: Validación rechazada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Sesión ausente o usuario inactivo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Permiso insuficiente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - SessionCookie: []
+      parameters:
+      - *id006
+      - *id007
+  /users:
+    get:
+      summary: Consultar equipo
+      description: Solo administrador.
+      operationId: get_users
+      tags:
+      - Administración
+      responses:
+        '200':
+          description: Operación correcta
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '422':
+          description: Validación rechazada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Sesión ausente o usuario inactivo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Permiso insuficiente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - SessionCookie: []
+      parameters: []
+    post:
+      summary: Crear usuario
+      description: Solo administrador.
+      operationId: post_users
+      tags:
+      - Administración
+      responses:
+        '201':
+          description: Operación correcta
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '422':
+          description: Validación rechazada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '419':
+          description: CSRF inválido; renovar sesión y reintentar con la misma clave
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Sesión ausente o usuario inactivo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Permiso insuficiente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - SessionCookie: []
+      parameters:
+      - *id002
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInput'
+  /users/{user}:
+    put:
+      summary: Editar usuario o su estado
+      description: Solo administrador. No permite quitar el propio acceso administrativo.
+        Contraseña omitida conserva el hash anterior.
+      operationId: put_users_user
+      tags:
+      - Administración
+      responses:
+        '200':
+          description: Operación correcta
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '422':
+          description: Validación rechazada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '419':
+          description: CSRF inválido; renovar sesión y reintentar con la misma clave
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Sesión ausente o usuario inactivo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Permiso insuficiente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Registro inexistente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - SessionCookie: []
+      parameters:
+      - name: user
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+      - *id002
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdate'
+  /audits:
+    get:
+      summary: Consultar auditoría
+      description: Solo administrador.
+      operationId: get_audits
+      tags:
+      - Administración
+      responses:
+        '200':
+          description: Operación correcta
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditPage'
+        '422':
+          description: Validación rechazada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Sesión ausente o usuario inactivo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Permiso insuficiente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - SessionCookie: []
+      parameters:
+      - *id003
+components:
+  securitySchemes:
+    SessionCookie:
+      type: apiKey
+      in: cookie
+      name: nova_salud_session
+      description: Cookie HttpOnly, Secure en producción; GET /session obtiene el
+        token CSRF.
+  schemas:
+    User:
+      type: object
+      properties:
+        id: *id004
+        name: *id001
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+          enum:
+          - admin
+          - seller
+        active: *id008
+      required:
+      - id
+      - name
+      - email
+      - role
+      - active
+    Category:
+      type: object
+      properties:
+        id: *id004
+        name: *id001
+    ProductInput:
+      type: object
+      properties:
+        code: &id009
+          type: string
+          maxLength: 40
+        name: &id010
+          type: string
+          maxLength: 160
+        category_id: *id004
+        presentation: &id011
+          type: string
+          maxLength: 100
+        description: &id012
+          type: string
+          nullable: true
+          maxLength: 2000
+        price_cents: &id013
+          type: integer
+          minimum: 0
+          maximum: 10000000
+        min_stock: &id014
+          type: integer
+          minimum: 0
+          maximum: 100000
+        active: *id008
+      required:
+      - code
+      - name
+      - category_id
+      - presentation
+      - price_cents
+      - min_stock
+    Product:
+      type: object
+      properties:
+        id: *id004
+        code: *id009
+        name: *id010
+        category_id: *id004
+        presentation: *id011
+        description: *id012
+        price_cents: *id013
+        min_stock: *id014
+        active: *id008
+        category:
+          $ref: '#/components/schemas/Category'
+        total_stock: &id015
+          type: integer
+          nullable: true
+        available_stock: *id015
+        batches:
+          type: array
+          items:
+            $ref: '#/components/schemas/Batch'
+    Batch:
+      type: object
+      properties:
+        id: *id004
+        product_id: *id004
+        code: *id001
+        expires_at:
+          type: string
+          format: date
+        quantity: *id004
+        product:
+          $ref: '#/components/schemas/Product'
+    Sale:
+      type: object
+      properties:
+        id: *id004
+        user_id: *id004
+        user:
+          $ref: '#/components/schemas/User'
+        payment_method:
+          type: string
+          enum:
+          - cash
+          - card
+          - transfer
+        status:
+          type: string
+          enum:
+          - completed
+          - cancelled
+        total_cents: *id004
+        demo: *id008
+        created_at:
+          type: string
+          format: date-time
+        cancelled_at:
+          type: string
+          nullable: true
+        cancelled_by:
+          type: integer
+          nullable: true
+        cancel_reason:
+          type: string
+          nullable: true
+        canceller:
+          allOf:
+          - $ref: '#/components/schemas/User'
+          nullable: true
+        items_count: *id004
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/SaleItem'
+    SaleItem:
+      type: object
+      properties:
+        id: *id004
+        product_id: *id004
+        product_name: *id001
+        product_code: *id001
+        quantity: *id004
+        unit_price_cents: *id004
+        subtotal_cents: *id004
+        allocations:
+          type: array
+          items:
+            type: object
+            properties:
+              quantity: *id004
+              batch:
+                $ref: '#/components/schemas/Batch'
+    SaleInput:
+      type: object
+      properties:
+        payment_method:
+          type: string
+          enum:
+          - cash
+          - card
+          - transfer
+        items:
+          type: array
+          minItems: 1
+          maxItems: 100
+          items:
+            type: object
+            properties:
+              product_id: *id004
+              quantity:
+                type: integer
+                minimum: 1
+                maximum: 10000
+            required:
+            - product_id
+            - quantity
+      required:
+      - payment_method
+      - items
+    StockInput:
+      type: object
+      properties:
+        product_id: *id004
+        type:
+          type: string
+          enum:
+          - entry
+          - adjustment
+        batch_id:
+          type: integer
+          nullable: true
+          description: Obligatorio para adjustment; debe pertenecer al producto.
+        code:
+          type: string
+          maxLength: 60
+          description: Obligatorio en entry. Único dentro del producto.
+        expires_at:
+          type: string
+          format: date
+          description: Obligatorio en entry; hoy o posterior.
+        quantity:
+          type: integer
+          minimum: -100000
+          maximum: 100000
+          description: No cero. En entry, estrictamente positivo. En adjustment, variación
+            firmada.
+        reason:
+          type: string
+          minLength: 5
+          maxLength: 255
+      required:
+      - product_id
+      - type
+      - quantity
+      - reason
+    UserInput:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 12
+          maxLength: 128
+          writeOnly: true
+        role:
+          type: string
+          enum:
+          - admin
+          - seller
+        active: *id008
+      required:
+      - name
+      - email
+      - password
+      - role
+      - active
+    UserUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          nullable: true
+          minLength: 12
+          maxLength: 128
+          writeOnly: true
+        role:
+          type: string
+          enum:
+          - admin
+          - seller
+        active: *id008
+      required:
+      - name
+      - email
+      - role
+      - active
+    Movement:
+      type: object
+      properties:
+        id: *id004
+        batch:
+          $ref: '#/components/schemas/Batch'
+        user:
+          $ref: '#/components/schemas/User'
+        sale_id:
+          type: integer
+          nullable: true
+        type:
+          type: string
+          enum:
+          - entry
+          - adjustment
+          - sale
+          - void
+        quantity: *id004
+        stock_after: *id004
+        reason: *id001
+        created_at:
+          type: string
+          format: date-time
+    Alerts:
+      type: object
+      properties:
+        low_stock:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+        expiring:
+          type: array
+          items:
+            $ref: '#/components/schemas/Batch'
+        expired:
+          type: array
+          items:
+            $ref: '#/components/schemas/Batch'
+        as_of:
+          type: string
+          format: date-time
+    Error:
+      type: object
+      properties:
+        message: *id001
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items: *id001
+    Audit:
+      type: object
+      properties:
+        id: *id004
+        user_id:
+          type: integer
+          nullable: true
+        action: *id001
+        subject: *id001
+        metadata:
+          type: object
+          nullable: true
+          additionalProperties: true
+        created_at: *id001
+    Report:
+      type: object
+      properties:
+        today_cents: *id004
+        today_count: *id004
+        period_cents: *id004
+        period_count: *id004
+        product_count: *id004
+        low_count: *id004
+        out_count: *id004
+        expiring_count: *id004
+        expired_count: *id004
+        from:
+          type: string
+          format: date
+        to:
+          type: string
+          format: date
+        series:
+          type: array
+          items:
+            type: object
+            properties:
+              day:
+                type: string
+                format: date
+              total_cents: *id004
+              count: *id004
+        top_products:
+          type: array
+          items:
+            type: object
+            properties:
+              product_id: *id004
+              name: *id001
+              quantity:
+                oneOf:
+                - *id004
+                - *id001
+              total_cents:
+                oneOf:
+                - *id004
+                - *id001
+        recent_sales:
+          type: array
+          items:
+            $ref: '#/components/schemas/Sale'
+        as_of: *id001
+    ProductPage:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+        current_page: *id004
+        last_page: *id004
+        total: *id004
+        per_page: *id004
+        from:
+          type: integer
+          nullable: true
+        to:
+          type: integer
+          nullable: true
+        links:
+          type: array
+          items:
+            type: object
+            properties:
+              url:
+                type: string
+                nullable: true
+              label: *id001
+              active: *id008
+    SalePage:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Sale'
+        current_page: *id004
+        last_page: *id004
+        total: *id004
+        per_page: *id004
+        from:
+          type: integer
+          nullable: true
+        to:
+          type: integer
+          nullable: true
+        links:
+          type: array
+          items:
+            type: object
+            properties:
+              url:
+                type: string
+                nullable: true
+              label: *id001
+              active: *id008
+    MovementPage:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Movement'
+        current_page: *id004
+        last_page: *id004
+        total: *id004
+        per_page: *id004
+        from:
+          type: integer
+          nullable: true
+        to:
+          type: integer
+          nullable: true
+        links:
+          type: array
+          items:
+            type: object
+            properties:
+              url:
+                type: string
+                nullable: true
+              label: *id001
+              active: *id008
+    AuditPage:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Audit'
+        current_page: *id004
+        last_page: *id004
+        total: *id004
+        per_page: *id004
+        from:
+          type: integer
+          nullable: true
+        to:
+          type: integer
+          nullable: true
+        links:
+          type: array
+          items:
+            type: object
+            properties:
+              url:
+                type: string
+                nullable: true
+              label: *id001
+              active: *id008

@@ -61,7 +61,7 @@ $run = function (array $actors, string $key) use ($p) {
         unlink($f);
     }
 
-return $results;
+    return $results;
 };
 $before = Sale::count();
 $out = $run($users, (string) Str::uuid());
