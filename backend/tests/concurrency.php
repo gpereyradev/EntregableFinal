@@ -1,9 +1,5 @@
 <?php
 
-// Run only against an isolated, already migrated testing database.
-require __DIR__.'/../vendor/autoload.php';
-$app = require __DIR__.'/../bootstrap/app.php';
-$app->make(Kernel::class)->bootstrap();
 use App\Models\Batch;
 use App\Models\Category;
 use App\Models\Product;
@@ -14,6 +10,11 @@ use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+
+// Run only against an isolated, already migrated testing database.
+require __DIR__.'/../vendor/autoload.php';
+$app = require __DIR__.'/../bootstrap/app.php';
+$app->make(Kernel::class)->bootstrap();
 
 if (app()->environment() !== 'testing' || DB::getDriverName() !== 'pgsql') {
     throw new RuntimeException('Requires APP_ENV=testing and a dedicated PostgreSQL test branch.');
