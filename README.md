@@ -1,6 +1,6 @@
 # Nova Salud · Inventario y ventas
 
-Aplicación fullstack del trabajo final **PIAD-527 — SENATI**. Centraliza productos, lotes, movimientos y ventas de una botica con una interfaz adaptable, acceso por roles y una API interna extensible.
+Aplicación fullstack del trabajo final **PIAD-527 — SENATI** de la carrera de Ingenieria de Software con Inteligencia Artificial. Centraliza productos, lotes, movimientos y ventas de una botica con una interfaz adaptable, acceso por roles y una API interna extensible.
 
 ## Qué incluye
 
