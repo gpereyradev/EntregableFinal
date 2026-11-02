@@ -57,8 +57,29 @@ class LowStockAlertTest extends TestCase
         Http::assertSentCount(1);
         Http::assertSent(fn ($request) => str_contains($request->url(), '/sendMessage')
             && $request['chat_id'] === '-100123'
-            && str_contains($request['text'], 'ALERT-1')
-            && str_contains($request['text'], 'Disponible: 5'));
+            && $request['parse_mode'] === 'HTML'
+            && str_contains($request['text'], 'Código: ALERT-1')
+            && str_contains($request['text'], 'Quedan: <b>5 unidades</b> (mínimo: 5)'));
+    }
+
+    public function test_message_reads_clearly_and_escapes_html(): void
+    {
+        $notifier = app(\App\Services\LowStockNotifier::class);
+        $product = new Product(['name' => 'Jarabe <b>&</b> niños', 'code' => 'JAR-1', 'min_stock' => 10]);
+
+        $low = $notifier->message($product, 4);
+        $this->assertStringStartsWith('<b>🟠 Stock bajo</b> · Nova Salud', $low);
+        $this->assertStringContainsString('Jarabe &lt;b&gt;&amp;&lt;/b&gt; niños', $low);
+        $this->assertStringContainsString('Quedan: <b>4 unidades</b> (mínimo: 10)', $low);
+        $this->assertStringContainsString('Conviene reponer pronto.', $low);
+
+        $out = $notifier->message($product, 0);
+        $this->assertStringStartsWith('<b>🔴 Sin stock</b>', $out);
+        $this->assertStringContainsString('Quedan: <b>0 unidades</b>', $out);
+        $this->assertStringContainsString('Reponer hoy para no perder ventas.', $out);
+
+        $one = $notifier->message($product, 1);
+        $this->assertStringContainsString('Quedan: <b>1 unidad</b>', $one);
     }
 
     public function test_no_alert_while_stock_is_above_minimum(): void

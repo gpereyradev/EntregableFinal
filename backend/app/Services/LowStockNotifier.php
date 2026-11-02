@@ -67,7 +67,8 @@ class LowStockNotifier
                 ->timeout(5)
                 ->post('https://api.telegram.org/bot'.$token.'/sendMessage', [
                     'chat_id' => $chatId,
-                    'text' => "⚠️ Nova Salud · Stock bajo\n{$product->name} ({$product->code})\nDisponible: {$available} · Mínimo: {$product->min_stock}",
+                    'parse_mode' => 'HTML',
+                    'text' => $this->message($product, $available),
                 ])
                 ->throw();
 
@@ -78,5 +79,26 @@ class LowStockNotifier
 
             return false;
         }
+    }
+
+    /** Mensaje para personal de la botica: estado, unidades, mínimo, acción y hora local. */
+    public function message(Product $product, int $available): string
+    {
+        $out = $available <= 0;
+        $title = $out ? '🔴 Sin stock' : '🟠 Stock bajo';
+        $action = $out ? 'Reponer hoy para no perder ventas.' : 'Conviene reponer pronto.';
+        $units = $available === 1 ? 'unidad' : 'unidades';
+        $time = now()->setTimezone('America/Lima')->format('d/m/Y H:i');
+
+        return implode("\n", [
+            "<b>{$title}</b> · Nova Salud",
+            '',
+            '<b>'.e($product->name).'</b>',
+            'Código: '.e($product->code),
+            "Quedan: <b>{$available} {$units}</b> (mínimo: {$product->min_stock})",
+            '',
+            $action,
+            "🕒 {$time} (Lima)",
+        ]);
     }
 }
