@@ -44,5 +44,5 @@ Cierra mostrando el enlace, el código y la documentación. La nota depende de l
 - **¿Por qué PostgreSQL?** Relaciones y restricciones, transacciones y bloqueos de fila para proteger existencias concurrentes.
 - **¿Por qué varios lenguajes?** Cada uno tiene un papel: TypeScript en la interfaz, PHP en negocio y SQL en persistencia; HTML/CSS para presentación.
 - **¿Es tiempo real?** El servidor actualiza inmediatamente en la transacción; las vistas ajenas consultan cada 30 segundos y al recuperar foco. No hay push instantáneo.
-- **¿Dónde están las APIs externas?** Son la siguiente etapa asignada al compañero; la API interna está operativa y documentada.
+- **¿Dónde están las APIs externas?** Telegram Bot API avisa cuando un producto llega a su stock mínimo. Se envía después de confirmar la transacción y un fallo no bloquea la venta. La API interna está operativa y documentada.
 - **¿Cómo demuestra que se redujo la espera?** Aún no hay medición de campo. Se propone comparar tiempos antes y después, con mediana y p90 en condiciones equivalentes.
