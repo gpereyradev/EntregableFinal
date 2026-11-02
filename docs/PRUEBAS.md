@@ -74,5 +74,5 @@ La suite RefreshDatabase crea/reinicia el esquema de la base seleccionada y usa 
 - La consulta de cambios entre vistas es cada 30 s, no push instantáneo.
 - Las pruebas no sustituyen auditoría de seguridad, prueba de carga sostenida ni evaluación de usabilidad con personal real.
 - El comprobante HTML incluye estilos de impresión; la salida física depende del navegador y de la impresora.
-- No se ensayaron APIs externas porque pertenecen a la etapa del compañero.
+- La integración con Telegram se prueba con `Http::fake()`: envío único por cruce, rearme tras reposición, fallo sin bloquear la venta y configuración ausente. No se verificó contra el bot real en esta sesión.
 - El intento de conexión directa a Neon desde el entorno local fue bloqueado por su red; las pruebas PostgreSQL se ejecutaron en GitHub Actions y sobre la aplicación pública, sin alterar la base de otro proyecto.

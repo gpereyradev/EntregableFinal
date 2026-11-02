@@ -107,7 +107,7 @@ Solo administrador. Devuelve `sale` con `status=cancelled`, responsable, fecha y
 
 ## Alertas, reportes y equipo
 
-`GET /alerts` devuelve `low_stock`, `expiring`, `expired` y `as_of`.  
+`GET /alerts` devuelve `low_stock`, `expiring`, `expired` y `as_of`. Al confirmar una venta o un ajuste que deja un producto con disponible ≤ mínimo, el servidor envía un aviso a Telegram si está configurado; no aparece en esta respuesta.  
 `GET /reports?from=AAAA-MM-DD&to=AAAA-MM-DD` devuelve importes, conteos, serie diaria y top 5 por unidades. Máximo 366 días.  
 `GET /reports/export` con el mismo filtro descarga CSV diario, UTF-8 con BOM.  
 `GET /movements?type=entry&product_id=1&page=1` permite reconstruir cambios por lote.  

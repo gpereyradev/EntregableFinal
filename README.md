@@ -10,7 +10,8 @@ Aplicación fullstack del trabajo final **PIAD-527 — SENATI**. Centraliza prod
 - Punto de venta, descuento FEFO de lotes vigentes, comprobante interno imprimible y anulación trazable.
 - Transacciones PostgreSQL, bloqueo de productos y claves de idempotencia para ventas y movimientos.
 - Alertas de reposición y vencimiento; reportes por fecha y exportación CSV.
-- Datos ficticios de demostración, sin APIs externas ni datos personales reales.
+- Datos ficticios de demostración, sin datos personales reales.
+- Aviso por Telegram cuando un producto llega a su stock mínimo, sin reenvíos repetidos (ver [Integraciones](INTEGRACIONES.md)).
 - Interfaz editorial adaptable, con temas claro, oscuro y automático; preferencia persistente en el navegador.
 
 ## Arquitectura
@@ -91,4 +92,4 @@ Una fecha de vencimiento igual al día actual se considera vigente hasta finaliz
 
 Los reportes muestran importes de ventas confirmadas, sin ganancias ni porcentajes de mejora inventados. Los documentos impresos son **comprobantes internos**, sin autorización electrónica SUNAT. Las cuentas y productos iniciales son ficticios.
 
-Las APIs externas quedan para la siguiente etapa del grupo. No hay consultas DNI/RUC, pagos electrónicos, IA, recetas ni facturación tributaria implementadas.
+La única API externa es Telegram Bot API, para avisos de stock bajo. No hay consultas DNI/RUC, pagos electrónicos, IA, recetas ni facturación tributaria implementadas.

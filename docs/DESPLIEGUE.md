@@ -26,6 +26,8 @@ La base conserva datos independientemente del reinicio del servicio web. La rama
 | LOG_CHANNEL | stderr |
 | DEMO_ADMIN_PASSWORD | contraseña aleatoria, fuera del repositorio |
 | DEMO_SELLER_PASSWORD | otra contraseña aleatoria |
+| TELEGRAM_BOT_TOKEN | token del bot de BotFather, secreto; opcional |
+| TELEGRAM_CHAT_ID | id del chat que recibe los avisos, secreto; opcional |
 
 Se utiliza una conexión directa para las migraciones. Para esta demostración de baja concurrencia también es adecuada para Apache; si se aumenta la escala, usar el host agrupado para la aplicación y una conexión directa separada en el paso de migración.
 

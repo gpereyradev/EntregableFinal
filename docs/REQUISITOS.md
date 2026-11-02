@@ -35,4 +35,4 @@ El PDF menciona actualización «en tiempo real». Esta versión implementa comp
 | MEJ-10 | API documentada y extensible | `openapi.yaml`, API.md e INTEGRACIONES.md | Compañero puede consumir la API preservando reglas |
 | MEJ-11 | Auditoría de acciones | Audit y `GET /api/audits` | Entradas, edición, login, ventas y anulaciones trazables |
 
-No se consideran implementadas APIs externas, facturación SUNAT, cálculo de rentabilidad, control de recetas, gestión de proveedores ni notificaciones por correo. La alerta es un panel dinámico dentro de la aplicación.
+Se implementa una API externa (Telegram Bot API) que avisa al cruzar el stock mínimo. No se implementan notificaciones por correo, facturación SUNAT, cálculo de rentabilidad, control de recetas ni gestión de proveedores. El panel de alertas sigue siendo la vista principal y se actualiza con cada operación.
