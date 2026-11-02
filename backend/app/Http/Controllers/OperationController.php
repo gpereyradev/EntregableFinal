@@ -7,6 +7,7 @@ use App\Http\Requests\StockRequest;
 use App\Models\Movement;
 use App\Models\Sale;
 use App\Services\InventoryService;
+use App\Services\LowStockNotifier;
 use Illuminate\Http\Request;
 
 class OperationController extends Controller
@@ -19,14 +20,20 @@ class OperationController extends Controller
         return $s->once($r->user(), $key, ['path' => $r->path(), 'body' => $r->validated()], $callback);
     }
 
-    public function stock(StockRequest $r, InventoryService $s)
+    public function stock(StockRequest $r, InventoryService $s, LowStockNotifier $n)
     {
-        return response()->json($this->once($r, $s, fn () => $s->move($r->user(), $r->validated())), 201);
+        $result = $this->once($r, $s, fn () => $s->move($r->user(), $r->validated()));
+        $n->check([$r->validated()['product_id']]);
+
+        return response()->json($result, 201);
     }
 
-    public function sell(SaleRequest $r, InventoryService $s)
+    public function sell(SaleRequest $r, InventoryService $s, LowStockNotifier $n)
     {
-        return response()->json($this->once($r, $s, fn () => $s->sell($r->user(), $r->validated())), 201);
+        $result = $this->once($r, $s, fn () => $s->sell($r->user(), $r->validated()));
+        $n->check(collect($r->validated()['items'])->pluck('product_id')->all());
+
+        return response()->json($result, 201);
     }
 
     public function cancel(Request $r, Sale $sale, InventoryService $s)
