@@ -16,7 +16,6 @@ import {
   CheckCircle2,
   ChevronLeft,
   ChevronRight,
-  ChevronDown,
   CircleHelp,
   Clock3,
   CreditCard,
@@ -47,8 +46,8 @@ import {
 } from "lucide-react";
 import {
   ResponsiveContainer,
-  AreaChart,
-  Area,
+  LineChart,
+  Line,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -75,6 +74,8 @@ import type {
   Report,
   Movement,
 } from "./api";
+
+type AlertTab = "stock" | "expiring" | "expired";
 
 type View =
   | "dashboard"
@@ -116,7 +117,7 @@ function Logo() {
       </span>
       <div>
         nova<span>salud</span>
-        <small>GESTIÓN DE BOTICA</small>
+        <small>Gestión de botica</small>
       </div>
     </div>
   );
@@ -403,21 +404,11 @@ function Chart({ data }: { data: Report["series"] }) {
   return (
     <div className="chart">
       <ResponsiveContainer width="100%" height="100%">
-        <AreaChart
+        <LineChart
           data={data}
-          margin={{ top: 15, right: 12, left: -15, bottom: 0 }}
+          margin={{ top: 8, right: 12, bottom: 0 }}
         >
-          <defs>
-            <linearGradient id="area" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="var(--chart)" stopOpacity={0.2} />
-              <stop offset="100%" stopColor="var(--chart)" stopOpacity={0} />
-            </linearGradient>
-          </defs>
-          <CartesianGrid
-            strokeDasharray="3 5"
-            vertical={false}
-            stroke="var(--line)"
-          />
+          <CartesianGrid vertical={false} stroke="var(--line)" />
           <XAxis
             dataKey="day"
             axisLine={false}
@@ -433,6 +424,8 @@ function Chart({ data }: { data: Report["series"] }) {
             dy={10}
           />
           <YAxis
+            width={62}
+            tickCount={5}
             axisLine={false}
             tickLine={false}
             tick={{ fill: "var(--muted)", fontSize: 11 }}
@@ -449,15 +442,16 @@ function Chart({ data }: { data: Report["series"] }) {
               fontSize: 13,
             }}
           />
-          <Area
-            type="monotone"
+          <Line
+            type="linear"
             dataKey="total_cents"
             stroke="var(--chart)"
-            strokeWidth={3}
-            fill="url(#area)"
+            strokeWidth={2}
+            dot={data.length === 1}
+            isAnimationActive={false}
             activeDot={{ r: 5, strokeWidth: 3, stroke: "var(--panel)" }}
           />
-        </AreaChart>
+        </LineChart>
       </ResponsiveContainer>
     </div>
   );
@@ -467,134 +461,35 @@ function Login({ onLogin }: { onLogin: (u: User) => void }) {
     [busy, setBusy] = useState(false);
   return (
     <main className="login">
-      <section className="login-story">
-        <div className="login-brand-row">
-          <Logo />
-          <span className="edition-label">TU ESPACIO DE TRABAJO</span>
-        </div>
+      <section className="login-story" aria-label="Sobre Nova Salud">
+        <Logo />
         <div className="story-body">
-          <span className="eyebrow light">UN BUEN DÍA EMPIEZA CON ORDEN</span>
-          <h1>
-            Tu botica,
-            <br />
-            <span className="heading-accent">más simple.</span>
-          </h1>
+          <h2>El día a día<br />de tu botica.</h2>
           <p>
-            Tu inventario al día. Tus ventas, sin vueltas.
-            <br className="desktop-break" /> Todo lo que necesitas, en un solo
-            lugar.
+            Gestiona existencias por lote, registra ventas y revisa los
+            vencimientos de tus productos.
           </p>
-          <div className="hero-index">
-            <span>Inventario al día</span>
-            <span>Ventas más ágiles</span>
-            <span>Todo conectado</span>
-          </div>
         </div>
-        <div className="hero-symbol" aria-hidden="true">
-          <svg viewBox="0 0 340 270" fill="none">
-            <ellipse
-              cx="172"
-              cy="251"
-              rx="140"
-              ry="12"
-              fill="currentColor"
-              opacity=".08"
-            />
-            <rect
-              x="60"
-              y="89"
-              width="226"
-              height="155"
-              rx="17"
-              fill="var(--panel)"
-              stroke="currentColor"
-              strokeWidth="2"
-            />
-            <path
-              d="M45 102C45 94 49 87 55 83L85 62H255L286 83C292 87 296 94 296 102V119H45V102Z"
-              fill="currentColor"
-              opacity=".22"
-            />
-            <path
-              d="M45 118H297"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-            <rect
-              x="81"
-              y="144"
-              width="79"
-              height="66"
-              rx="10"
-              fill="var(--login-hero)"
-            />
-            <rect
-              x="184"
-              y="142"
-              width="71"
-              height="102"
-              rx="11"
-              fill="var(--login-hero)"
-              stroke="currentColor"
-              strokeWidth="2"
-            />
-            <path
-              d="M239 192V204M120 155V199M93 177H148"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              opacity=".45"
-            />
-            <rect
-              x="135"
-              y="20"
-              width="74"
-              height="73"
-              rx="22"
-              fill="currentColor"
-            />
-            <path
-              d="M172 39V74M154 56H190"
-              stroke="var(--panel)"
-              strokeWidth="10"
-              strokeLinecap="round"
-            />
-            <path
-              d="M39 214C22 192 20 174 34 165C49 156 62 174 53 197C50 205 44 212 39 214Z"
-              fill="currentColor"
-              opacity=".4"
-            />
-            <path
-              d="M40 212V242"
-              stroke="currentColor"
-              strokeWidth="3"
-              strokeLinecap="round"
-            />
-            <rect
-              x="28"
-              y="229"
-              width="26"
-              height="19"
-              rx="6"
-              fill="currentColor"
-              opacity=".6"
-            />
-            <path
-              d="M295 51L303 43M302 72H314M280 36V25"
-              stroke="currentColor"
-              strokeWidth="3"
-              strokeLinecap="round"
-              opacity=".65"
-            />
-          </svg>
-        </div>
-        <div className="story-footer">
-          <span>INVENTARIO & VENTAS</span>
-          <span>
-            LIMA, PERÚ <ArrowUpRight size={14} />
-          </span>
-        </div>
+        <svg className="login-shelf" viewBox="0 0 560 238" fill="none" aria-hidden="true">
+          <path d="M10 204h540M10 218h540" stroke="currentColor" strokeWidth="2" />
+          <rect x="36" y="63" width="138" height="141" rx="6" fill="var(--panel)" stroke="currentColor" strokeWidth="2" />
+          <path d="M37 80h136M36 168h138" stroke="currentColor" strokeWidth="2" />
+          <path d="M105 106v37m-19-18h38" stroke="currentColor" strokeWidth="8" />
+          <path d="M52 184h53m12 0h40" stroke="currentColor" strokeWidth="2" />
+          <rect x="198" y="22" width="104" height="182" rx="22" fill="var(--login-hero)" stroke="currentColor" strokeWidth="2" />
+          <path d="M215 113h70" stroke="currentColor" strokeWidth="2" />
+          <g fill="var(--panel)" stroke="currentColor" strokeWidth="2">
+            <circle cx="227" cy="57" r="11" /><circle cx="273" cy="57" r="11" />
+            <circle cx="227" cy="91" r="11" /><circle cx="273" cy="91" r="11" />
+            <circle cx="227" cy="139" r="11" /><circle cx="273" cy="139" r="11" />
+            <circle cx="227" cy="173" r="11" /><circle cx="273" cy="173" r="11" />
+          </g>
+          <rect x="321" y="100" width="202" height="104" rx="6" fill="var(--panel)" stroke="currentColor" strokeWidth="2" />
+          <path d="M322 119h200m-201 63h202m-167-39v19m8-19v19m5-19v19m10-19v19m5-19v19m8-19v19m12-19v19m5-19v19m8-19v19m6-19v19" stroke="currentColor" strokeWidth="2" />
+          <circle cx="487" cy="151" r="17" fill="var(--brief)" stroke="currentColor" strokeWidth="2" />
+          <path d="M487 141v11l6 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        </svg>
+        <p className="story-footer">Inventario por lote · Punto de venta</p>
       </section>
       <section className="login-form">
         <div className="login-tools">
@@ -604,9 +499,8 @@ function Login({ onLogin }: { onLogin: (u: User) => void }) {
           <ThemeSwitcher />
         </div>
         <div className="login-form-inner">
-          <span className="eyebrow">ACCESO AL EQUIPO</span>
-          <h2>Hola de nuevo.</h2>
-          <p>Inicia sesión y sigue donde lo dejaste.</p>
+          <h1>Inicia sesión</h1>
+          <p>Accede al espacio de trabajo de Nova Salud.</p>
           <form
             onSubmit={async (e) => {
               e.preventDefault();
@@ -649,7 +543,7 @@ function Login({ onLogin }: { onLogin: (u: User) => void }) {
             {error && <ErrorBox message={error} />}
             <button className="button primary login-submit" disabled={busy}>
               {busy ? (
-                <LoaderCircle className="spin" size={18} />
+                <>Ingresando… <LoaderCircle className="spin" size={18} /></>
               ) : (
                 <>
                   Iniciar sesión <ArrowUpRight size={19} />
@@ -680,6 +574,7 @@ export default function App() {
     [demo, setDemo] = useState(false),
     [view, setView] = useState<View>("dashboard"),
     [mobile, setMobile] = useState(false),
+    [alertTab, setAlertTab] = useState<AlertTab>("stock"),
     [toast, setToast] = useState(""),
     [sale, setSale] = useState<Sale | null>(null);
   const notify = (s: string) => setToast(s);
@@ -710,8 +605,9 @@ export default function App() {
       return () => clearTimeout(t);
     }
   }, [toast]);
-  const navigate = (v: View) => {
+  const navigate = (v: View, tab: AlertTab = "stock") => {
     setView(v);
+    if (v === "alerts") setAlertTab(tab);
     setMobile(false);
     window.scrollTo(0, 0);
   };
@@ -766,31 +662,31 @@ export default function App() {
           onClick={() => setMobile(false)}
         />
       )}
-      <aside className={"sidebar " + (mobile ? "open" : "")}>
+      <aside id="workspace-menu" className={"sidebar " + (mobile ? "open" : "")}>
         <Logo />
-        <div className="sidebar-section">OPERACIÓN</div>
-        <nav>
+        <div className="sidebar-section">Operación</div>
+        <nav aria-label="Operación">
           {nav.map((v) => {
             const Icon = icons[v];
             return (
               <button
                 key={v}
                 className={"nav-item " + (view === v ? "active" : "")}
+                aria-current={view === v ? "page" : undefined}
                 onClick={() => navigate(v)}
               >
                 <Icon size={19} />
                 {labels[v]}
-                {v === "pos" && <span className="nav-new">VENTA</span>}
-                {view === v && <i />}
               </button>
             );
           })}
         </nav>
         {admin && (
           <>
-            <div className="sidebar-section admin-label">ADMINISTRAR</div>
+            <div className="sidebar-section admin-label">Administración</div>
             <button
               className={"nav-item " + (view === "users" ? "active" : "")}
+              aria-current={view === "users" ? "page" : undefined}
               onClick={() => navigate("users")}
             >
               <Users size={19} />
@@ -801,6 +697,7 @@ export default function App() {
         <div className="sidebar-bottom">
           <button
             className={"nav-item " + (view === "help" ? "active" : "")}
+            aria-current={view === "help" ? "page" : undefined}
             onClick={() => navigate("help")}
           >
             <CircleHelp size={18} />
@@ -842,6 +739,8 @@ export default function App() {
             <button
               className="icon-button mobile-menu"
               aria-label="Abrir menú"
+              aria-controls="workspace-menu"
+              aria-expanded={mobile}
               onClick={() => setMobile(true)}
             >
               <Menu size={22} />
@@ -871,7 +770,6 @@ export default function App() {
                 onClick={() => navigate("alerts")}
               >
                 <Bell size={19} />
-                <i />
               </button>
             )}
             <span className="avatar small">{user.name.slice(0, 1)}</span>
@@ -892,14 +790,16 @@ export default function App() {
           )}
           {view === "sales" && <Sales openSale={openSale} admin={admin} />}
           {view === "movements" && admin && <Movements />}
-          {view === "alerts" && admin && <AlertPage navigate={navigate} />}
+          {view === "alerts" && admin && (
+            <AlertPage navigate={navigate} tab={alertTab} setTab={setAlertTab} />
+          )}
           {view === "reports" && admin && <Reports />}
           {view === "users" && admin && <Team notify={notify} />}
           {view === "help" && <Help admin={admin} />}
         </main>
         <footer className="app-footer">
           <span>
-            <span className="live-dot" /> Nova Salud · Datos conectados
+            Nova Salud · Gestión de botica
           </span>
           <span>Inventario · Ventas · Control</span>
         </footer>
@@ -964,219 +864,150 @@ function Dashboard({
   navigate,
   openSale,
 }: {
-  navigate: (v: View) => void;
+  navigate: (view: View, tab?: AlertTab) => void;
   openSale: (id: number) => void;
 }) {
   const { data: d, loading, error, refresh } = useResource<Report>("reports");
-  if (loading) return <Loading />;
-  if (error) return <ErrorBox message={error} retry={refresh} />;
-  if (!d) return null;
   return (
-    <>
-      <section className="dashboard-hero">
-        <div className="dashboard-hero-copy">
-          <span className="eyebrow">TU ESPACIO DE TRABAJO</span>
-          <h1>
-            Tu botica,
-            <br />
-            <span className="heading-accent">en orden.</span>
-          </h1>
-          <p>Ventas, existencias y lo que necesita tu atención.</p>
+    <div className="overview">
+      <PageTitle
+        title="Vista general"
+        description="Revisa las ventas de hoy y los pendientes de inventario."
+        action={
           <button className="button primary" onClick={() => navigate("pos")}>
-            Nueva venta <ArrowUpRight size={19} />
+            <Plus size={18} /> Nueva venta
           </button>
-        </div>
-        <div className="today-brief">
-          <div className="brief-top">
-            <span>
-              <i className="live-dot" /> ESTADO DEL INVENTARIO
-            </span>
-            <span>01</span>
-          </div>
-          <strong>
-            {String(d.low_count).padStart(2, "0")}
-            <span>
-              productos
-              <br />
-              por reponer
-            </span>
-          </strong>
-          <p>
-            {d.out_count} agotados · {d.expiring_count} lotes próximos a vencer
-          </p>
-          <button onClick={() => navigate("alerts")}>
-            Revisar pendientes <ArrowUpRight size={18} />
-          </button>
-          <div className="brief-cross" aria-hidden="true">
-            +
-          </div>
-        </div>
-      </section>
-      <div className="overview-meta">
-        <span className="section-kicker">
-          <span className="live-dot" /> Resumen de hoy
-        </span>
-        <Sync refresh={refresh} />
-      </div>
-      <div className="stats-grid">
-        <Stat
-          title="Ventas de hoy"
-          value={money(d.today_cents)}
-          note={`${d.today_count} ventas confirmadas`}
-          icon={<Wallet />}
-          tone="teal"
-        />
-        <Stat
-          title="Productos activos"
-          value={String(d.product_count).padStart(2, "0")}
-          note="Referencias en tu inventario"
-          icon={<Package />}
-          tone="blue"
-        />
-        <Stat
-          title="Stock por reponer"
-          value={String(d.low_count).padStart(2, "0")}
-          note={`${d.out_count} productos agotados`}
-          icon={<TriangleAlert />}
-          tone="amber"
-          onClick={() => navigate("alerts")}
-        />
-        <Stat
-          title="Próximos a vencer"
-          value={String(d.expiring_count).padStart(2, "0")}
-          note="Lotes en los siguientes 30 días"
-          icon={<Clock3 />}
-          tone="purple"
-          onClick={() => navigate("alerts")}
-        />
-      </div>
-      <div className="dashboard-middle">
-        <section className="panel sales-chart">
-          <div className="panel-header">
-            <div>
-              <h2>Ventas de la semana</h2>
-              <p>Importes de ventas confirmadas</p>
-            </div>
-            <span className="period-chip">
-              Últimos 7 días <ChevronDown size={13} />
-            </span>
-          </div>
-          <div className="chart-total">
-            {money(d.period_cents)}
-            <span>{d.period_count} operaciones en el período</span>
-          </div>
-          <Chart data={d.series} />
-        </section>
-        <section className="panel top-products">
-          <div className="panel-header">
-            <div>
-              <h2>Productos más vendidos</h2>
-              <p>Unidades · últimos 7 días</p>
-            </div>
-            <span className="mini-icon">
-              <ShoppingBag size={17} />
-            </span>
-          </div>
-          <div className="top-list">
-            {d.top_products.map((p, i) => (
-              <div className="top-product" key={p.product_id}>
-                <span className="rank">{String(i + 1).padStart(2, "0")}</span>
-                <div className="top-product-body">
-                  <div>
-                    <strong>{p.name}</strong>
-                    <b>
-                      {p.quantity}
-                      <small> uds.</small>
-                    </b>
-                  </div>
-                  <div className="mini-bar">
-                    <span
-                      style={{
-                        width:
-                          (Number(p.quantity) /
-                            Number(d.top_products[0].quantity)) *
-                            100 +
-                          "%",
-                      }}
-                    />
-                  </div>
-                </div>
+        }
+      />
+      {error ? (
+        <ErrorBox message={error} retry={refresh} />
+      ) : loading ? (
+        <Loading />
+      ) : d && (
+        <div className="overview-grid">
+          <section className="panel overview-summary" aria-label="Resumen del día">
+            <Stat
+              title="Ventas de hoy"
+              value={money(d.today_cents)}
+              note={`${d.today_count} ${d.today_count === 1 ? "venta confirmada" : "ventas confirmadas"}`}
+            />
+            <Stat
+              title="Productos activos"
+              value={String(d.product_count)}
+              note="En el catálogo de la botica"
+            />
+          </section>
+          <section className="panel stock-queue">
+            <div className="panel-header">
+              <div>
+                <h2>Pendientes de botica</h2>
+                <p>Stock mínimo y vencimientos por lote</p>
               </div>
-            ))}
-            {!d.top_products.length && <Empty title="Aún no hay ventas" />}
-          </div>
-          <button className="panel-link" onClick={() => navigate("reports")}>
-            Explorar reportes <ArrowRight size={15} />
-          </button>
-        </section>
-      </div>
-      <div className="dashboard-bottom">
-        <section className="panel recent">
-          <div className="panel-header">
-            <div>
-              <h2>Actividad reciente</h2>
-              <p>Las últimas ventas de tu botica</p>
             </div>
-            <button className="text-button" onClick={() => navigate("sales")}>
-              Ver todas <ArrowUpRight size={15} />
+            {([
+              {
+                tab: "stock",
+                title: "Productos por reponer",
+                count: d.low_count,
+                note: d.out_count === 1 ? "Incluye 1 agotado" : `Incluye ${d.out_count} agotados`,
+                Icon: Package,
+                tone: "warning",
+              },
+              {
+                tab: "expired",
+                title: "Lotes vencidos",
+                count: d.expired_count,
+                note: "Con unidades en inventario",
+                Icon: TriangleAlert,
+                tone: "negative",
+              },
+              {
+                tab: "expiring",
+                title: "Lotes próximos a vencer",
+                count: d.expiring_count,
+                note: "En los próximos 30 días",
+                Icon: Clock3,
+                tone: "warning",
+              },
+            ] as const).map(({ tab, title, count, note, Icon, tone }) => (
+              <button className="queue-row" key={tab} onClick={() => navigate("alerts", tab)}>
+                <Icon size={18} aria-hidden="true" />
+                <span>
+                  <strong>{title}</strong>
+                  <small>{note}</small>
+                </span>
+                <b className={count ? tone : "muted"}>{count}</b>
+                <ChevronRight size={16} aria-hidden="true" />
+              </button>
+            ))}
+          </section>
+          <section className="panel overview-sales">
+            <div className="panel-header">
+              <div>
+                <h2>Ventas de la semana</h2>
+                <p>{date(d.from)} – {date(d.to)}</p>
+              </div>
+              <Sync refresh={refresh} />
+            </div>
+            <div className="chart-total">
+              {money(d.period_cents)}
+              <span>{d.period_count} {d.period_count === 1 ? "venta confirmada" : "ventas confirmadas"}</span>
+            </div>
+            <Chart data={d.series} />
+          </section>
+          <section className="panel overview-products">
+            <div className="panel-header">
+              <div>
+                <h2>Productos más vendidos</h2>
+                <p>Unidades vendidas esta semana</p>
+              </div>
+            </div>
+            {d.top_products.length ? (
+              <ol className="ranked-products">
+                {d.top_products.map((product) => (
+                  <li key={product.product_id}>
+                    <span>{product.name}</span>
+                    <b>{product.quantity} <small>uds.</small></b>
+                  </li>
+                ))}
+              </ol>
+            ) : <Empty title="Aún no hay ventas esta semana" />}
+            <button className="panel-link" onClick={() => navigate("reports")}>
+              Explorar reportes <ArrowRight size={15} />
             </button>
-          </div>
-          <SalesTable rows={d.recent_sales} openSale={openSale} />
-        </section>
-        <section className="replenish">
-          <div className="replenish-heading">
-            <PackagePlus size={24} />
-            <span className="eyebrow">PARA TU PRÓXIMA REPOSICIÓN</span>
-          </div>
-          <h2>
-            La próxima
-            <br />
-            <span className="heading-accent">prioridad.</span>
-          </h2>
-          <p>
-            {d.low_count
-              ? `${d.low_count} productos están en el mínimo o por debajo. Consulta el detalle antes de tu próxima entrada.`
-              : "Todos los productos están por encima del mínimo configurado."}
-          </p>
-          <button
-            className="button secondary"
-            onClick={() => navigate("inventory")}
-          >
-            Abrir inventario <ArrowUpRight size={17} />
-          </button>
-        </section>
-      </div>
-    </>
+          </section>
+          <section className="panel overview-recent">
+            <div className="panel-header">
+              <div>
+                <h2>Ventas recientes</h2>
+                <p>Últimos comprobantes registrados</p>
+              </div>
+              <button className="text-button" onClick={() => navigate("sales")}>
+                Ver todas <ArrowUpRight size={15} />
+              </button>
+            </div>
+            <SalesTable rows={d.recent_sales} openSale={openSale} />
+          </section>
+        </div>
+      )}
+    </div>
   );
 }
 function Stat({
   title,
   value,
   note,
-  icon,
-  tone,
-  onClick,
 }: {
   title: string;
   value: string;
   note: string;
-  icon: ReactNode;
-  tone: string;
-  onClick?: () => void;
 }) {
   return (
-    <button
-      className={"stat-card " + (onClick ? "clickable" : "")}
-      onClick={onClick}
-      disabled={!onClick}
-    >
-      <div className="stat-top">
-        <span>{title}</span>
-        <i className={"stat-icon " + tone}>{icon}</i>
-      </div>
+    <div className="stat-card">
+      <div className="stat-top">{title}</div>
       <strong>{value}</strong>
       <p>{note}</p>
-    </button>
+    </div>
   );
 }
 function Inventory({
@@ -2035,7 +1866,7 @@ function SalesTable({
             <th>Comprobante</th>
             <th>Fecha</th>
             <th>Pago</th>
-            <th>Importe</th>
+            <th className="numeric">Importe</th>
             <th>Estado</th>
             <th />
           </tr>
@@ -2399,9 +2230,16 @@ function Movements() {
     </>
   );
 }
-function AlertPage({ navigate }: { navigate: (v: View) => void }) {
+function AlertPage({
+  navigate,
+  tab,
+  setTab,
+}: {
+  navigate: (v: View) => void;
+  tab: AlertTab;
+  setTab: (tab: AlertTab) => void;
+}) {
   const { data: d, loading, error, refresh } = useResource<Alerts>("alerts");
-  const [tab, setTab] = useState("stock");
   if (loading) return <Loading />;
   if (error) return <ErrorBox message={error} retry={refresh} />;
   if (!d) return null;
@@ -2424,6 +2262,7 @@ function AlertPage({ navigate }: { navigate: (v: View) => void }) {
       <div className="alert-summary">
         <button
           className={tab === "stock" ? "selected" : ""}
+          aria-pressed={tab === "stock"}
           onClick={() => setTab("stock")}
         >
           <span className="stat-icon amber">
@@ -2437,6 +2276,7 @@ function AlertPage({ navigate }: { navigate: (v: View) => void }) {
         </button>
         <button
           className={tab === "expiring" ? "selected" : ""}
+          aria-pressed={tab === "expiring"}
           onClick={() => setTab("expiring")}
         >
           <span className="stat-icon purple">
@@ -2450,6 +2290,7 @@ function AlertPage({ navigate }: { navigate: (v: View) => void }) {
         </button>
         <button
           className={tab === "expired" ? "selected" : ""}
+          aria-pressed={tab === "expired"}
           onClick={() => setTab("expired")}
         >
           <span className="stat-icon red">
@@ -2624,15 +2465,11 @@ function Reports() {
                 title="Importe vendido"
                 value={money(d.period_cents)}
                 note="Ventas confirmadas del período"
-                icon={<Wallet />}
-                tone="teal"
               />
               <Stat
                 title="Operaciones"
                 value={String(d.period_count)}
                 note="Ventas que no fueron anuladas"
-                icon={<ReceiptText />}
-                tone="blue"
               />
               <Stat
                 title="Ticket promedio"
@@ -2642,8 +2479,6 @@ function Reports() {
                     : 0,
                 )}
                 note="Importe vendido / operaciones"
-                icon={<BarChart3 />}
-                tone="purple"
               />
             </div>
             <section className="panel">
@@ -2672,7 +2507,7 @@ function Reports() {
                         <tr>
                           <th>Producto</th>
                           <th>Unidades</th>
-                          <th>Importe</th>
+                          <th className="numeric">Importe</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -2703,7 +2538,7 @@ function Reports() {
                       <tr>
                         <th>Fecha</th>
                         <th>Ventas</th>
-                        <th>Importe</th>
+                        <th className="numeric">Importe</th>
                       </tr>
                     </thead>
                     <tbody>
