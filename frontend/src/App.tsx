@@ -1,6 +1,6 @@
 import { ThemeSwitcher } from "./theme";
 import { createOperationKey } from "./operationKey";
-import { useState, useEffect, useRef, useCallback, useId } from "react";
+import { useState, useEffect, useLayoutEffect, useRef, useCallback, useId } from "react";
 import type { ReactNode, FormEvent } from "react";
 import {
   Activity,
@@ -119,50 +119,42 @@ function Logo() {
     <div className="brand">
       <img className="nova-mark" src={import.meta.env.BASE_URL + "nova-mark.svg"} alt="" width="44" height="44" />
       <div>
-        Nova <span>Salud</span>
-        <small>Botica operativa</small>
+        nova<span>salud</span>
+        <small>Gestión de botica</small>
       </div>
     </div>
   );
 }
 
-function LabelArtwork() {
+function LoginArtwork() {
   return (
-    <svg className="label-art" viewBox="0 0 680 420" fill="none" aria-hidden="true">
-      <path d="M39 309h594M39 320h594" stroke="var(--art-line)" />
-      <g transform="translate(80 121) rotate(-7 87 94)">
-        <rect width="174" height="188" rx="11" fill="#e9edf1" />
-        <path d="M10 10h154v168H10z" stroke="#a7b6c6" />
-        <g fill="#c2ced9" stroke="#879eb4" strokeWidth="1.2">
-          <rect x="26" y="28" width="48" height="31" rx="15.5" /><rect x="100" y="28" width="48" height="31" rx="15.5" />
-          <rect x="26" y="79" width="48" height="31" rx="15.5" /><rect x="100" y="79" width="48" height="31" rx="15.5" />
-          <rect x="26" y="130" width="48" height="31" rx="15.5" /><rect x="100" y="130" width="48" height="31" rx="15.5" />
-        </g>
-        <path d="M87 12v163" stroke="#879eb4" strokeDasharray="3 4" />
+    <svg className="login-art" viewBox="0 0 600 320" fill="none" aria-hidden="true">
+      <path d="M55 246 302 102l245 144-247 143z" fill="var(--art-ground)" />
+      <g stroke="var(--art-grid)" strokeWidth="1.3">
+        <path d="m55 246 245 143M116 210l246 143M178 174l246 143M240 138l245 143M302 102l245 144" />
+        <path d="m547 246-247 143M485 210 239 353M424 174 178 317M362 138 116 281M302 102 55 246" />
       </g>
-      <g transform="translate(233 31)">
-        <path d="M35 72h150v33c0 13 34 23 34 48v133a17 17 0 0 1-17 17H18a17 17 0 0 1-17-17V153c0-25 34-35 34-48z" fill="#263b5b" stroke="#7389a4" strokeWidth="2" />
-        <rect x="22" y="17" width="176" height="64" rx="8" fill="#8fa4bb" />
-        <path d="M36 29v38m12-38v38m12-38v38m12-38v38m12-38v38m12-38v38m12-38v38m12-38v38m12-38v38m12-38v38m12-38v38m12-38v38m12-38v38" stroke="#435c7b" strokeWidth="2" />
-        <path d="M2 159h216v111H2z" fill="#f7f3e9" />
-        <path d="M16 174h188v80H16z" stroke="#bac3c9" />
-        <path d="M30 229h160m-160 10h86" stroke="#899aab" strokeWidth="1.4" />
-        <text x="29" y="209" fill="#182d49" fontSize="25" fontWeight="600">Nova Salud</text>
-        <path d="M186 187v25m-12-13h24" stroke="#27577e" strokeWidth="3" />
+      <g>
+        <path d="m176 121 100-57 100 57-100 58z" fill="#eafaf3" />
+        <path d="m176 121 100 58v118l-100-58z" fill="#87d4ae" />
+        <path d="m276 179 100-58v118l-100 58z" fill="#21a46b" />
+        <path d="m276 72 83 48-83 48-83-48z" stroke="#186f4a" />
+        <path d="m214 143 15 9v16l13 7v16l-13-7v17l-15-9v-17l-14-8v-16l14 8z" fill="#13563b" />
+        <path d="m300 219 48-28m-48 41 32-18m-32 31 48-28" stroke="#d6f9e7" strokeWidth="3" strokeLinecap="round" />
       </g>
-      <g transform="translate(411 177) rotate(8 100 76)">
-        <path d="M3 0h186l27 22v126H3z" fill="#f1ba72" />
-        <path d="M189 0v22h27m-198-9h163v120H18z" stroke="#a26731" />
-        <path d="M31 67h136m-136 14h106" stroke="#a26731" />
-        <path d="M35 98v23m7-23v23m5-23v23m9-23v23m5-23v23m10-23v23m5-23v23m5-23v23m10-23v23m6-23v23m12-23v23" stroke="#172747" strokeWidth="2" />
-        <text x="30" y="50" fill="#172747" fontSize="18" fontWeight="700">Ficha de lote</text>
+      <g>
+        <path d="m344 164 59-34 64 37-59 34z" fill="#e4f3f9" />
+        <path d="m344 164 64 37v75l-64-37z" fill="#b1d7e4" />
+        <path d="m408 201 59-34v75l-59 34z" fill="#3c879f" />
+        <path d="m364 182 24 14m-24-3 24 14m-24-3 24 14" stroke="#386a7b" strokeWidth="3" />
       </g>
-      <path d="M41 354h594" stroke="var(--art-line)" strokeDasharray="2 5" />
-      <g fill="var(--art-caption)" fontSize="14" fontFamily="monospace">
-        <text x="42" y="381">PRESENTACIÓN</text>
-        <text x="269" y="381">EXISTENCIAS</text>
-        <text x="502" y="381">TRAZABILIDAD</text>
+      <g>
+        <path d="m95 225 55-32 65 38-55 32z" fill="#fff3d6" />
+        <path d="m95 225 65 38v38l-65-38z" fill="#f5c76c" />
+        <path d="m160 263 55-32v38l-55 32z" fill="#b9892c" />
       </g>
+      <path d="m444 91 11 7v13l-11 6-12-6V98z" fill="#15803d" />
+      <path d="m490 126 9 5v11l-9 5-9-5v-11z" fill="#87d4ae" />
     </svg>
   );
 }
@@ -283,7 +275,7 @@ function Modal({
 }) {
   const ref = useRef<HTMLDialogElement>(null);
   const titleId = useId();
-  useEffect(() => {
+  useLayoutEffect(() => {
     const d = ref.current;
     d?.showModal();
     return () => {
@@ -518,15 +510,18 @@ function Login({ onLogin }: { onLogin: (u: User) => void }) {
   return (
     <main className="login">
       <section className="login-story" aria-label="Sobre Nova Salud">
-        <div className="login-story-top">
-          <Logo />
-          <span>Inventario y ventas</span>
-        </div>
+        <Logo />
         <div className="story-body">
-          <h2>Del estante<br />al mostrador<span>.</span></h2>
-          <p>Stock por lote, vencimientos y caja en un solo registro de botica.</p>
+          <span className="login-kicker"><span /> Tu botica conectada</span>
+          <h2>Cada caja.<br />Cada lote.<br /><em>Bajo control.</em></h2>
+          <p>Un espacio para vender, reponer y cuidar lo que tienes en inventario.</p>
         </div>
-        <LabelArtwork />
+        <LoginArtwork />
+        <div className="login-capabilities">
+          <span><Package size={16} /> Inventario</span>
+          <span><ShoppingCart size={16} /> Punto de venta</span>
+          <span><ShieldCheck size={16} /> Trazabilidad</span>
+        </div>
       </section>
       <section className="login-form">
         <div className="login-tools">
@@ -536,8 +531,9 @@ function Login({ onLogin }: { onLogin: (u: User) => void }) {
           <ThemeSwitcher />
         </div>
         <div className="login-form-inner">
-          <h1>Acceso al mostrador</h1>
-          <p>Ingresa con las credenciales de tu equipo.</p>
+          <span className="login-welcome">Bienvenido a Nova Salud</span>
+          <h1>Todo listo para<br />un nuevo día.</h1>
+          <p>Inicia sesión con tu cuenta de trabajo.</p>
           <form
             onSubmit={async (e) => {
               e.preventDefault();
@@ -623,10 +619,12 @@ export default function App() {
     [demo, setDemo] = useState(false),
     [view, setView] = useState<View>("dashboard"),
     [mobile, setMobile] = useState(false),
+    [desktop, setDesktop] = useState(() => window.matchMedia("(min-width: 1121px)").matches),
     [alertTab, setAlertTab] = useState<AlertTab>("stock"),
     [toast, setToast] = useState(""),
     [sale, setSale] = useState<Sale | null>(null);
   const menuTrigger = useRef<HTMLButtonElement>(null);
+  const menuDialog = useRef<HTMLDialogElement>(null);
   const notify = (s: string) => setToast(s);
   const load = () => {
     setBoot(true);
@@ -656,15 +654,34 @@ export default function App() {
     }
   }, [toast]);
   useEffect(() => {
-    if (!mobile) return;
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key !== "Escape") return;
-      setMobile(false);
-      menuTrigger.current?.focus();
+    const query = window.matchMedia("(min-width: 1121px)");
+    const updateViewport = () => {
+      setDesktop(query.matches);
+      if (query.matches) setMobile(false);
     };
-    window.addEventListener("keydown", closeOnEscape);
-    return () => window.removeEventListener("keydown", closeOnEscape);
-  }, [mobile]);
+    query.addEventListener("change", updateViewport);
+    return () => query.removeEventListener("change", updateViewport);
+  }, []);
+  useLayoutEffect(() => {
+    const dialog = menuDialog.current;
+    if (!dialog) return;
+    if (desktop) {
+      dialog.close();
+      dialog.open = true;
+      return;
+    }
+    if (!mobile) {
+      dialog.close();
+      return;
+    }
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    dialog.showModal();
+    return () => {
+      dialog.close();
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [mobile, desktop, user]);
   const navigate = (v: View, tab: AlertTab = "stock") => {
     setView(v);
     if (v === "alerts") setAlertTab(tab);
@@ -715,54 +732,11 @@ export default function App() {
       : ["pos", "inventory", "sales"];
   return (
     <div className="app-shell">
-      {mobile && (
-        <button
-          className="sidebar-backdrop"
-          aria-label="Cerrar menú"
-          onClick={() => setMobile(false)}
-        />
-      )}
-      <aside id="workspace-menu" className={"sidebar " + (mobile ? "open" : "")}>
+      <a className="skip-link" href="#main-workspace">Ir al contenido</a>
+      <header className="masthead">
         <Logo />
-        <div className="sidebar-section">Operación</div>
-        <nav aria-label="Operación">
-          {nav.map((v) => {
-            const Icon = icons[v];
-            return (
-              <button
-                key={v}
-                className={"nav-item " + (view === v ? "active" : "")}
-                aria-current={view === v ? "page" : undefined}
-                onClick={() => navigate(v)}
-              >
-                <Icon size={19} />
-                {labels[v]}
-              </button>
-            );
-          })}
-        </nav>
-        {admin && (
-          <>
-            <div className="sidebar-section admin-label">Administración</div>
-            <button
-              className={"nav-item " + (view === "users" ? "active" : "")}
-              aria-current={view === "users" ? "page" : undefined}
-              onClick={() => navigate("users")}
-            >
-              <Users size={19} />
-              Equipo
-            </button>
-          </>
-        )}
-        <div className="sidebar-bottom">
-          <button
-            className={"nav-item " + (view === "help" ? "active" : "")}
-            aria-current={view === "help" ? "page" : undefined}
-            onClick={() => navigate("help")}
-          >
-            <CircleHelp size={18} />
-            Ayuda y guía
-          </button>
+        <div className="masthead-tools">
+          <ThemeSwitcher />
           <div className="profile">
             <span className="avatar">
               {user.name
@@ -792,7 +766,57 @@ export default function App() {
             </button>
           </div>
         </div>
-      </aside>
+      </header>
+      <dialog
+        ref={menuDialog}
+        id="workspace-menu"
+        className={"sidebar " + (mobile ? "open" : "")}
+        role={desktop ? "presentation" : undefined}
+        aria-label="Navegación de Nova Salud"
+        onKeyDown={(event) => {
+          if (desktop || event.key !== "Tab") return;
+          const buttons = event.currentTarget.querySelectorAll<HTMLButtonElement>("button:not(:disabled)");
+          const first = buttons[0];
+          const last = buttons[buttons.length - 1];
+          if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last?.focus();
+          } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first?.focus();
+          }
+        }}
+        onCancel={(event) => {
+          event.preventDefault();
+          setMobile(false);
+        }}
+        onClick={(event) => {
+          if (event.target !== event.currentTarget || desktop) return;
+          const bounds = event.currentTarget.getBoundingClientRect();
+          if (event.clientX > bounds.right || event.clientX < bounds.left) setMobile(false);
+        }}
+      >
+        <div className="drawer-heading">
+          <Logo />
+          <button className="icon-button" aria-label="Cerrar navegación" onClick={() => setMobile(false)}><X size={21} /></button>
+        </div>
+        <nav aria-label="Operación">
+          {[...nav, ...(admin ? ["users" as const] : []), "help" as const].map((item) => {
+            const Icon = icons[item];
+            return (
+              <button
+                key={item}
+                className={"nav-item " + (view === item ? "active" : "")}
+                aria-current={view === item ? "page" : undefined}
+                onClick={() => navigate(item)}
+              >
+                <Icon size={18} aria-hidden="true" />
+                <span>{item === "help" ? "Ayuda y guía" : labels[item]}</span>
+              </button>
+            );
+          })}
+        </nav>
+      </dialog>
       <div className="workspace">
         <header className="topbar">
           <div>
@@ -806,12 +830,9 @@ export default function App() {
             >
               <Menu size={22} />
             </button>
-            <span className="breadcrumb">
-              <span>Mostrador</span><ChevronRight size={14} /> <b>{labels[view]}</b>
-            </span>
+            <span className="workspace-label">{labels[view]}</span>
           </div>
           <div className="topbar-right">
-            <ThemeSwitcher />
             <span className="today">
               <Clock3 size={14} />
               {new Date().toLocaleDateString("es-PE", {
@@ -833,10 +854,10 @@ export default function App() {
                 <Bell size={19} />
               </button>
             )}
-            <span className="avatar small">{user.name.slice(0, 1)}</span>
+
           </div>
         </header>
-        <main className={`main-content view-${view}${view === "pos" ? " pos-main" : ""}`}>
+        <main id="main-workspace" tabIndex={-1} className={`main-content view-${view}${view === "pos" ? " pos-main" : ""}`}>
           {view === "dashboard" && admin && (
             <Dashboard navigate={navigate} openSale={openSale} />
           )}
@@ -930,8 +951,8 @@ function Dashboard({
   return (
     <div className="overview">
       <PageTitle
-        eyebrow="Resumen operativo"
-        title="Turno de hoy"
+        eyebrow="Tu centro de operaciones"
+        title="Vista general"
         description="Estado de caja, existencias y vencimientos de la botica."
         action={
           <button className="button primary" onClick={() => navigate("pos")}>
@@ -945,17 +966,14 @@ function Dashboard({
         <Loading />
       ) : d && (
         <div className="overview-grid">
-          <section className="panel overview-summary" aria-label="Resumen del día">
-            <Stat
-              title="Importe de hoy"
-              value={money(d.today_cents)}
-              note={`${d.today_count} ${d.today_count === 1 ? "venta confirmada" : "ventas confirmadas"}`}
-            />
-            <Stat
-              title="Productos activos"
-              value={String(d.product_count)}
-              note="En el catálogo de la botica"
-            />
+          <section className="cash-today" aria-label="Resumen del día">
+            <div className="cash-heading"><span><Wallet size={18} /> Caja de hoy</span><span className="cash-scope">Ventas confirmadas</span></div>
+            <strong className="cash-amount">{money(d.today_cents)}</strong>
+            <div className="cash-details">
+              <span><b>{d.today_count}</b> {d.today_count === 1 ? "venta registrada" : "ventas registradas"}</span>
+              <span><b>{d.product_count}</b> productos activos</span>
+            </div>
+            <button type="button" onClick={() => navigate("sales")}>Ver operaciones de caja <ArrowUpRight size={17} /></button>
           </section>
           <section className="panel stock-queue" aria-label="Control de lotes">
             <div className="panel-header">
