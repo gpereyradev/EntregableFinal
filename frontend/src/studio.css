@@ -80,6 +80,9 @@
   --login-muted: #b2c7ba;
   --art-ground: #1b3026;
   --art-grid: #40624c;
+  --cash-bg: #1d4d35;
+  --cash-ink: #ecfff1;
+  --cash-muted: #b9dfc7;
 }
 body {
   font-size: 14px;
