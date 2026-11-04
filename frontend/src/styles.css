@@ -6,81 +6,87 @@
   font-size: 14px;
   font-weight: 450;
   font-synthesis: none;
-  --heading: "Plus Jakarta Sans Variable", "Segoe UI", sans-serif;
-  --canvas: #f4f8f7;
-  --panel: #ffffff;
-  --subtle: #edf3f8;
-  --hover: #eff6f4;
-  --ink: #203b55;
-  --muted: #506579;
-  --quiet: #566b7c;
-  --line: #dbe7e4;
-  --green: #167c76;
-  --deep: #10665f;
+  --heading: "DM Sans Variable", "Segoe UI", sans-serif;
+  --canvas: #e6ebf1;
+  --panel: #fffefb;
+  --subtle: #f0efe9;
+  --hover: #edf2f6;
+  --ink: #172747;
+  --muted: #4d5e73;
+  --quiet: #536174;
+  --line: #d9dfe6;
+  --green: #244e75;
+  --deep: #173b5d;
   --button-text: #ffffff;
-  --accent: #8de1d0;
-  --chart: #167c76;
-  --sidebar: #ffffff;
-  --sidebar-text: #566f85;
-  --sidebar-line: #e4edf3;
-  --sidebar-active: #e0f5ef;
-  --sidebar-brand: #24495b;
-  --sidebar-strong: #344f65;
-  --sidebar-muted: #536a7c;
-  --sidebar-hover: #f0f7fa;
-  --sidebar-active-text: #16736a;
+  --accent: #f1ba72;
+  --chart: #2a608a;
+  --sidebar: var(--canvas);
+  --sidebar-text: #40526a;
+  --sidebar-line: #c9d2dd;
+  --sidebar-active: #d6e0ec;
+  --sidebar-brand: #172747;
+  --sidebar-strong: #24354f;
+  --sidebar-muted: #4e5e71;
+  --sidebar-hover: #dce4ed;
+  --sidebar-active-text: #153c61;
   --positive-bg: #e5f6ed;
   --positive: #276d4c;
   --warning-bg: #fff2dc;
   --warning: #8b6323;
   --negative-bg: #ffebe7;
   --negative: #a84f40;
-  --focus: #238b83;
-  --brief: #e1f4f0;
-  --login-hero: #e4f2ed;
-  --login-ink: #234963;
+  --focus: #2b6698;
+  --brief: #f9ead4;
+  --login-hero: #152643;
+  --login-ink: #fcfaf5;
   --login-accent: #18786d;
-  --login-muted: #465f72;
+  --login-muted: #50627a;
   color: var(--ink);
   background: var(--canvas);
   color-scheme: light;
+  --display: "Newsreader Variable", Georgia, serif;
+  --mono: "IBM Plex Mono", ui-monospace, monospace;
+  --paper: #fcfaf5;
+  --art-line: #859ab6;
+  --art-caption: #c5d0df;
 }
 :root[data-theme="dark"] {
-  --canvas: #0d1724;
-  --panel: #142235;
-  --subtle: #1b2e42;
-  --hover: #1c3146;
-  --ink: #e8f1fc;
-  --muted: #aec1d3;
-  --quiet: #9db2c7;
-  --line: #2b4157;
-  --green: #77d7c3;
-  --deep: #9be8d7;
-  --button-text: #123c39;
-  --accent: #77d7c3;
-  --chart: #79d8c7;
-  --sidebar: #101f30;
-  --sidebar-text: #adbed0;
-  --sidebar-line: #2b4053;
-  --sidebar-active: #20453f;
-  --sidebar-brand: #e2f1ff;
-  --sidebar-strong: #d0e2f1;
-  --sidebar-muted: #9eb3c7;
-  --sidebar-hover: #1b3045;
-  --sidebar-active-text: #9ae8d5;
+  --canvas: #101725;
+  --panel: #1e2735;
+  --subtle: #242e3d;
+  --hover: #26374c;
+  --ink: #f3f0e7;
+  --muted: #b7c3d2;
+  --quiet: #a9b9ca;
+  --line: #374557;
+  --green: #a6c8ec;
+  --deep: #c7e0f8;
+  --button-text: #142740;
+  --accent: #f1ba72;
+  --chart: #a0c9ed;
+  --sidebar: var(--canvas);
+  --sidebar-text: #b7c4d4;
+  --sidebar-line: #344358;
+  --sidebar-active: #25364f;
+  --sidebar-brand: #fcfaf5;
+  --sidebar-strong: #f3f0e7;
+  --sidebar-muted: #aab9ca;
+  --sidebar-hover: #202d41;
+  --sidebar-active-text: #e0ecf9;
   --positive-bg: #1d3e36;
   --positive: #a2e2c1;
   --warning-bg: #423723;
   --warning: #f1cf8f;
   --negative-bg: #442e31;
   --negative: #f4b5a5;
-  --focus: #89e2d0;
-  --brief: #1b3c3c;
-  --login-hero: #163335;
+  --focus: #9bc8ed;
+  --brief: #3b3128;
+  --login-hero: #111e34;
   --login-ink: #e5f4ff;
   --login-accent: #83dec9;
-  --login-muted: #aac5da;
+  --login-muted: #becbdd;
   color-scheme: dark;
+  --paper: #181f2c;
 }
 * {
   box-sizing: border-box;
@@ -309,33 +315,6 @@ button svg {
   font-weight: 600;
   letter-spacing: 0.01em;
   color: var(--muted);
-}
-.brand-mark {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 39px;
-  border: 1px solid currentColor;
-  border-radius: 3px;
-}
-.brand-mark:before,
-.brand-mark:after {
-  content: "";
-  position: absolute;
-  background: currentColor;
-}
-.brand-mark:before {
-  width: 18px;
-  height: 5px;
-}
-.brand-mark:after {
-  width: 5px;
-  height: 18px;
-}
-.brand-mark > span {
-  display: none;
 }
 .theme-switcher {
   display: inline-flex;
@@ -2312,10 +2291,6 @@ td strong {
     font-size: 20px;
     gap: 7px;
   }
-  .receipt-brand .brand-mark {
-    width: 29px;
-    height: 33px;
-  }
   .receipt-brand .brand small {
     font-size: 5px;
     letter-spacing: 1.5px;
@@ -2477,12 +2452,6 @@ em {
   font-family: inherit;
   font-style: normal;
 }
-.brand-mark {
-  border: 0;
-  color: white;
-  background: #168c82;
-  border-radius: 10px;
-}
 .brand {
   font-size: 25px;
   letter-spacing: -1px;
@@ -2631,11 +2600,6 @@ textarea,
   }
 }
 @media print {
-  .brand-mark {
-    background: #fff;
-    border: 1px solid #111;
-    color: #111;
-  }
   .modal {
     border-radius: 0;
   }
@@ -2874,13 +2838,6 @@ td strong {
   font-size: clamp(15px, 1.35vw, 19px);
   line-height: 1.55;
 }
-.login-shelf {
-  display: block;
-  width: min(100%, 610px);
-  height: auto;
-  color: var(--login-accent);
-}
-.story-footer,
 .login-form > footer {
   color: var(--login-muted);
   font-size: 12px;

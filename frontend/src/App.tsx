@@ -6,6 +6,7 @@ import {
   Activity,
   ArrowDownLeft,
   ArrowDownToLine,
+  ArrowDown,
   ArrowLeft,
   ArrowRight,
   ArrowUpRight,
@@ -20,6 +21,8 @@ import {
   Clock3,
   CreditCard,
   FileText,
+  Eye,
+  EyeOff,
   LayoutDashboard,
   LoaderCircle,
   LogOut,
@@ -48,6 +51,8 @@ import {
   ResponsiveContainer,
   LineChart,
   Line,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -112,14 +117,53 @@ const labels: Record<View, string> = {
 function Logo() {
   return (
     <div className="brand">
-      <span className="brand-mark">
-        <span />
-      </span>
+      <img className="nova-mark" src={import.meta.env.BASE_URL + "nova-mark.svg"} alt="" width="44" height="44" />
       <div>
-        nova<span>salud</span>
-        <small>Gestión de botica</small>
+        Nova <span>Salud</span>
+        <small>Botica operativa</small>
       </div>
     </div>
+  );
+}
+
+function LabelArtwork() {
+  return (
+    <svg className="label-art" viewBox="0 0 680 420" fill="none" aria-hidden="true">
+      <path d="M39 309h594M39 320h594" stroke="var(--art-line)" />
+      <g transform="translate(80 121) rotate(-7 87 94)">
+        <rect width="174" height="188" rx="11" fill="#e9edf1" />
+        <path d="M10 10h154v168H10z" stroke="#a7b6c6" />
+        <g fill="#c2ced9" stroke="#879eb4" strokeWidth="1.2">
+          <rect x="26" y="28" width="48" height="31" rx="15.5" /><rect x="100" y="28" width="48" height="31" rx="15.5" />
+          <rect x="26" y="79" width="48" height="31" rx="15.5" /><rect x="100" y="79" width="48" height="31" rx="15.5" />
+          <rect x="26" y="130" width="48" height="31" rx="15.5" /><rect x="100" y="130" width="48" height="31" rx="15.5" />
+        </g>
+        <path d="M87 12v163" stroke="#879eb4" strokeDasharray="3 4" />
+      </g>
+      <g transform="translate(233 31)">
+        <path d="M35 72h150v33c0 13 34 23 34 48v133a17 17 0 0 1-17 17H18a17 17 0 0 1-17-17V153c0-25 34-35 34-48z" fill="#263b5b" stroke="#7389a4" strokeWidth="2" />
+        <rect x="22" y="17" width="176" height="64" rx="8" fill="#8fa4bb" />
+        <path d="M36 29v38m12-38v38m12-38v38m12-38v38m12-38v38m12-38v38m12-38v38m12-38v38m12-38v38m12-38v38m12-38v38m12-38v38m12-38v38" stroke="#435c7b" strokeWidth="2" />
+        <path d="M2 159h216v111H2z" fill="#f7f3e9" />
+        <path d="M16 174h188v80H16z" stroke="#bac3c9" />
+        <path d="M30 229h160m-160 10h86" stroke="#899aab" strokeWidth="1.4" />
+        <text x="29" y="209" fill="#182d49" fontSize="25" fontWeight="600">Nova Salud</text>
+        <path d="M186 187v25m-12-13h24" stroke="#27577e" strokeWidth="3" />
+      </g>
+      <g transform="translate(411 177) rotate(8 100 76)">
+        <path d="M3 0h186l27 22v126H3z" fill="#f1ba72" />
+        <path d="M189 0v22h27m-198-9h163v120H18z" stroke="#a26731" />
+        <path d="M31 67h136m-136 14h106" stroke="#a26731" />
+        <path d="M35 98v23m7-23v23m5-23v23m9-23v23m5-23v23m10-23v23m5-23v23m5-23v23m10-23v23m6-23v23m12-23v23" stroke="#172747" strokeWidth="2" />
+        <text x="30" y="50" fill="#172747" fontSize="18" fontWeight="700">Ficha de lote</text>
+      </g>
+      <path d="M41 354h594" stroke="var(--art-line)" strokeDasharray="2 5" />
+      <g fill="var(--art-caption)" fontSize="14" fontFamily="monospace">
+        <text x="42" y="381">PRESENTACIÓN</text>
+        <text x="269" y="381">EXISTENCIAS</text>
+        <text x="502" y="381">TRAZABILIDAD</text>
+      </g>
+    </svg>
   );
 }
 function useResource<T>(path: string, refreshEvery = 30000) {
@@ -400,11 +444,18 @@ function ProductName({ p }: { p: Product }) {
     </div>
   );
 }
-function Chart({ data }: { data: Report["series"] }) {
+function Chart({
+  data,
+  bars = false,
+}: {
+  data: Report["series"];
+  bars?: boolean;
+}) {
+  const Plot = bars ? BarChart : LineChart;
   return (
     <div className="chart">
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart
+        <Plot
           data={data}
           margin={{ top: 8, right: 12, bottom: 0 }}
         >
@@ -442,54 +493,40 @@ function Chart({ data }: { data: Report["series"] }) {
               fontSize: 13,
             }}
           />
-          <Line
-            type="linear"
-            dataKey="total_cents"
-            stroke="var(--chart)"
-            strokeWidth={2}
-            dot={data.length === 1}
-            isAnimationActive={false}
-            activeDot={{ r: 5, strokeWidth: 3, stroke: "var(--panel)" }}
-          />
-        </LineChart>
+          {bars ? (
+            <Bar dataKey="total_cents" fill="var(--chart)" maxBarSize={34} isAnimationActive={false} />
+          ) : (
+            <Line
+              type="linear"
+              dataKey="total_cents"
+              stroke="var(--chart)"
+              strokeWidth={2}
+              dot={data.length === 1}
+              isAnimationActive={false}
+              activeDot={{ r: 5, strokeWidth: 3, stroke: "var(--panel)" }}
+            />
+          )}
+        </Plot>
       </ResponsiveContainer>
     </div>
   );
 }
 function Login({ onLogin }: { onLogin: (u: User) => void }) {
   const [error, setError] = useState(""),
-    [busy, setBusy] = useState(false);
+    [busy, setBusy] = useState(false),
+    [showPassword, setShowPassword] = useState(false);
   return (
     <main className="login">
       <section className="login-story" aria-label="Sobre Nova Salud">
-        <Logo />
-        <div className="story-body">
-          <h2>El día a día<br />de tu botica.</h2>
-          <p>
-            Gestiona existencias por lote, registra ventas y revisa los
-            vencimientos de tus productos.
-          </p>
+        <div className="login-story-top">
+          <Logo />
+          <span>Inventario y ventas</span>
         </div>
-        <svg className="login-shelf" viewBox="0 0 560 238" fill="none" aria-hidden="true">
-          <path d="M10 204h540M10 218h540" stroke="currentColor" strokeWidth="2" />
-          <rect x="36" y="63" width="138" height="141" rx="6" fill="var(--panel)" stroke="currentColor" strokeWidth="2" />
-          <path d="M37 80h136M36 168h138" stroke="currentColor" strokeWidth="2" />
-          <path d="M105 106v37m-19-18h38" stroke="currentColor" strokeWidth="8" />
-          <path d="M52 184h53m12 0h40" stroke="currentColor" strokeWidth="2" />
-          <rect x="198" y="22" width="104" height="182" rx="22" fill="var(--login-hero)" stroke="currentColor" strokeWidth="2" />
-          <path d="M215 113h70" stroke="currentColor" strokeWidth="2" />
-          <g fill="var(--panel)" stroke="currentColor" strokeWidth="2">
-            <circle cx="227" cy="57" r="11" /><circle cx="273" cy="57" r="11" />
-            <circle cx="227" cy="91" r="11" /><circle cx="273" cy="91" r="11" />
-            <circle cx="227" cy="139" r="11" /><circle cx="273" cy="139" r="11" />
-            <circle cx="227" cy="173" r="11" /><circle cx="273" cy="173" r="11" />
-          </g>
-          <rect x="321" y="100" width="202" height="104" rx="6" fill="var(--panel)" stroke="currentColor" strokeWidth="2" />
-          <path d="M322 119h200m-201 63h202m-167-39v19m8-19v19m5-19v19m10-19v19m5-19v19m8-19v19m12-19v19m5-19v19m8-19v19m6-19v19" stroke="currentColor" strokeWidth="2" />
-          <circle cx="487" cy="151" r="17" fill="var(--brief)" stroke="currentColor" strokeWidth="2" />
-          <path d="M487 141v11l6 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-        </svg>
-        <p className="story-footer">Inventario por lote · Punto de venta</p>
+        <div className="story-body">
+          <h2>Del estante<br />al mostrador<span>.</span></h2>
+          <p>Stock por lote, vencimientos y caja en un solo registro de botica.</p>
+        </div>
+        <LabelArtwork />
       </section>
       <section className="login-form">
         <div className="login-tools">
@@ -499,8 +536,8 @@ function Login({ onLogin }: { onLogin: (u: User) => void }) {
           <ThemeSwitcher />
         </div>
         <div className="login-form-inner">
-          <h1>Inicia sesión</h1>
-          <p>Accede al espacio de trabajo de Nova Salud.</p>
+          <h1>Acceso al mostrador</h1>
+          <p>Ingresa con las credenciales de tu equipo.</p>
           <form
             onSubmit={async (e) => {
               e.preventDefault();
@@ -527,19 +564,31 @@ function Login({ onLogin }: { onLogin: (u: User) => void }) {
                 name="email"
                 type="email"
                 autoComplete="username"
-                placeholder="nombre@novasalud.demo"
+                placeholder="nombre@ejemplo.com"
                 required
               />
             </Field>
-            <Field label="Contraseña">
-              <input
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                placeholder="Tu contraseña"
-                required
-              />
-            </Field>
+            <div className="field">
+              <label htmlFor="login-password">Contraseña</label>
+              <div className="password-field">
+                <input
+                  id="login-password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="current-password"
+                  placeholder="Tu contraseña"
+                  required
+                />
+                <button
+                  type="button"
+                  className="icon-button"
+                  aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+            </div>
             {error && <ErrorBox message={error} />}
             <button className="button primary login-submit" disabled={busy}>
               {busy ? (
@@ -577,6 +626,7 @@ export default function App() {
     [alertTab, setAlertTab] = useState<AlertTab>("stock"),
     [toast, setToast] = useState(""),
     [sale, setSale] = useState<Sale | null>(null);
+  const menuTrigger = useRef<HTMLButtonElement>(null);
   const notify = (s: string) => setToast(s);
   const load = () => {
     setBoot(true);
@@ -605,6 +655,16 @@ export default function App() {
       return () => clearTimeout(t);
     }
   }, [toast]);
+  useEffect(() => {
+    if (!mobile) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      setMobile(false);
+      menuTrigger.current?.focus();
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [mobile]);
   const navigate = (v: View, tab: AlertTab = "stock") => {
     setView(v);
     if (v === "alerts") setAlertTab(tab);
@@ -738,6 +798,7 @@ export default function App() {
           <div>
             <button
               className="icon-button mobile-menu"
+              ref={menuTrigger}
               aria-label="Abrir menú"
               aria-controls="workspace-menu"
               aria-expanded={mobile}
@@ -746,7 +807,7 @@ export default function App() {
               <Menu size={22} />
             </button>
             <span className="breadcrumb">
-              Mi botica <ChevronRight size={14} /> <b>{labels[view]}</b>
+              <span>Mostrador</span><ChevronRight size={14} /> <b>{labels[view]}</b>
             </span>
           </div>
           <div className="topbar-right">
@@ -775,7 +836,7 @@ export default function App() {
             <span className="avatar small">{user.name.slice(0, 1)}</span>
           </div>
         </header>
-        <main className={"main-content " + (view === "pos" ? "pos-main" : "")}>
+        <main className={`main-content view-${view}${view === "pos" ? " pos-main" : ""}`}>
           {view === "dashboard" && admin && (
             <Dashboard navigate={navigate} openSale={openSale} />
           )}
@@ -795,13 +856,11 @@ export default function App() {
           )}
           {view === "reports" && admin && <Reports />}
           {view === "users" && admin && <Team notify={notify} />}
-          {view === "help" && <Help admin={admin} />}
+          {view === "help" && <Help admin={admin} navigate={navigate} />}
         </main>
         <footer className="app-footer">
-          <span>
-            Nova Salud · Gestión de botica
-          </span>
-          <span>Inventario · Ventas · Control</span>
+          <span>Nova Salud · Botica operativa</span>
+          <span>Inventario por lote / Caja</span>
         </footer>
       </div>
       {toast && (
@@ -871,8 +930,9 @@ function Dashboard({
   return (
     <div className="overview">
       <PageTitle
-        title="Vista general"
-        description="Revisa las ventas de hoy y los pendientes de inventario."
+        eyebrow="Resumen operativo"
+        title="Turno de hoy"
+        description="Estado de caja, existencias y vencimientos de la botica."
         action={
           <button className="button primary" onClick={() => navigate("pos")}>
             <Plus size={18} /> Nueva venta
@@ -887,7 +947,7 @@ function Dashboard({
         <div className="overview-grid">
           <section className="panel overview-summary" aria-label="Resumen del día">
             <Stat
-              title="Ventas de hoy"
+              title="Importe de hoy"
               value={money(d.today_cents)}
               note={`${d.today_count} ${d.today_count === 1 ? "venta confirmada" : "ventas confirmadas"}`}
             />
@@ -897,11 +957,11 @@ function Dashboard({
               note="En el catálogo de la botica"
             />
           </section>
-          <section className="panel stock-queue">
+          <section className="panel stock-queue" aria-label="Control de lotes">
             <div className="panel-header">
               <div>
                 <h2>Pendientes de botica</h2>
-                <p>Stock mínimo y vencimientos por lote</p>
+                <p>Abre un pendiente para revisar sus lotes o productos.</p>
               </div>
             </div>
             {([
@@ -1039,9 +1099,9 @@ function Inventory({
   return (
     <>
       <PageTitle
-        eyebrow="CADA UNIDAD CUENTA"
+        eyebrow="Catálogo y lotes"
         title="Inventario"
-        description="Productos, existencias y lotes en un solo lugar."
+        description="Consulta disponibilidad y sigue el recorrido de cada lote."
         action={
           admin && (
             <>
@@ -1061,7 +1121,17 @@ function Inventory({
           )
         }
       />
-      <section className="panel">
+      <section className="panel inventory-register">
+        <div className="register-tabs" role="group" aria-label="Estado de inventario">
+          {(admin
+            ? [["all", "Todos"], ["low", "Stock bajo"], ["out", "Agotados"], ["inactive", "Inactivos"]]
+            : [["all", "Todos"], ["low", "Stock bajo"], ["out", "Agotados"]]
+          ).map(([value, label]) => (
+            <button key={value} type="button" aria-pressed={status === value} onClick={() => setStatus(value)}>
+              {label}
+            </button>
+          ))}
+        </div>
         <div className="table-toolbar">
           <div className="search-box">
             <Search size={18} />
@@ -1093,16 +1163,6 @@ function Inventory({
                 </option>
               ))}
             </select>
-            <select
-              aria-label="Estado de inventario"
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-            >
-              <option value="all">Todos los productos</option>
-              <option value="low">Stock bajo</option>
-              <option value="out">Agotados</option>
-              {admin && <option value="inactive">Inactivos</option>}
-            </select>
           </div>
         </div>
         {error ? (
@@ -1112,37 +1172,37 @@ function Inventory({
         ) : data?.data.length ? (
           <>
             <div className="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Producto</th>
-                    <th>Categoría</th>
-                    <th>Precio de venta</th>
-                    <th>Stock disponible</th>
-                    <th>Estado</th>
-                    <th />
+              <table className="mobile-records" role="table">
+                <thead role="rowgroup">
+                  <tr role="row">
+                    <th role="columnheader">Producto</th>
+                    <th role="columnheader">Categoría</th>
+                    <th role="columnheader" className="numeric">Precio de venta</th>
+                    <th role="columnheader" className="numeric">Stock disponible</th>
+                    <th role="columnheader">Estado</th>
+                    <th role="columnheader" />
                   </tr>
                 </thead>
-                <tbody>
+                <tbody role="rowgroup">
                   {data.data.map((p) => (
-                    <tr key={p.id}>
-                      <td>
+                    <tr role="row" key={p.id}>
+                      <td role="cell" data-column="primary">
                         <ProductName p={p} />
                       </td>
-                      <td>
+                      <td role="cell" data-column="label" data-label="Categoría">
                         <span className="category-tag">{p.category.name}</span>
                       </td>
-                      <td className="amount">{money(p.price_cents)}</td>
-                      <td>
+                      <td role="cell" data-column="label" data-label="Precio" className="amount">{money(p.price_cents)}</td>
+                      <td role="cell" data-column="label" data-label="Disponible" className="numeric stock-cell">
                         <strong>{p.available_stock ?? 0}</strong>
                         <small className="table-sub">
                           Mín. {p.min_stock} · Total {p.total_stock ?? 0}
                         </small>
                       </td>
-                      <td>
+                      <td role="cell" data-column="label" data-label="Estado">
                         <StockBadge p={p} />
                       </td>
-                      <td>
+                      <td role="cell" data-column="actions">
                         <div className="row-actions">
                           <button
                             className="text-button"
@@ -1568,9 +1628,9 @@ function POS({ onSale }: { onSale: (s: Sale) => void }) {
   return (
     <>
       <PageTitle
-        eyebrow="ATENCIÓN MÁS ÁGIL"
+        eyebrow="Caja"
         title="Punto de venta"
-        description="Selecciona productos, revisa el pedido y registra la venta."
+        description="Busca productos y prepara el comprobante de la venta."
       />
       <div className="pos-layout">
         <section className="pos-catalog">
@@ -1661,7 +1721,7 @@ function POS({ onSale }: { onSale: (s: Sale) => void }) {
             </div>
           )}
         </section>
-        <aside className="cart panel">
+        <aside id="comprobante" tabIndex={-1} className="cart panel" aria-label="Comprobante en preparación">
           <div className="cart-header">
             <div>
               <ShoppingBag size={20} />
@@ -1686,7 +1746,7 @@ function POS({ onSale }: { onSale: (s: Sale) => void }) {
                 <span>
                   <ShoppingCart size={38} />
                 </span>
-                <h3>Todo empieza con un producto.</h3>
+                <h3>Comprobante vacío</h3>
                 <p>
                   Selecciona un producto del catálogo
                   <br />
@@ -1810,6 +1870,19 @@ function POS({ onSale }: { onSale: (s: Sale) => void }) {
           </div>
         </aside>
       </div>
+      {cart.length > 0 && (
+        <button
+          type="button"
+          className="mobile-cart-shortcut button primary"
+          onClick={() => {
+            const receipt = document.getElementById("comprobante");
+            receipt?.scrollIntoView({ block: "start" });
+            receipt?.focus({ preventScroll: true });
+          }}
+        >
+          <span>Ver comprobante · {money(total)}</span><ArrowDown size={16} />
+        </button>
+      )}
       {confirm && (
         <Modal
           title="¿Confirmar esta venta?"
@@ -1860,33 +1933,33 @@ function SalesTable({
 }) {
   return rows.length ? (
     <div className="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Comprobante</th>
-            <th>Fecha</th>
-            <th>Pago</th>
-            <th className="numeric">Importe</th>
-            <th>Estado</th>
-            <th />
+      <table className="mobile-records" role="table">
+        <thead role="rowgroup">
+          <tr role="row">
+            <th role="columnheader">Comprobante</th>
+            <th role="columnheader">Fecha</th>
+            <th role="columnheader">Pago</th>
+            <th role="columnheader" className="numeric">Importe</th>
+            <th role="columnheader">Estado</th>
+            <th role="columnheader" />
           </tr>
         </thead>
-        <tbody>
+        <tbody role="rowgroup">
           {rows.map((s) => (
-            <tr key={s.id}>
-              <td>
+            <tr role="row" key={s.id}>
+              <td role="cell" data-column="primary">
                 <span className="receipt-code">{saleCode(s.id)}</span>
                 <small className="table-sub">{s.user?.name}</small>
               </td>
-              <td>{date(s.created_at)}</td>
-              <td>{payment[s.payment_method]}</td>
-              <td className="amount">{money(s.total_cents)}</td>
-              <td>
+              <td role="cell" data-column="label" data-label="Fecha">{date(s.created_at)}</td>
+              <td role="cell" data-column="label" data-label="Pago">{payment[s.payment_method]}</td>
+              <td role="cell" data-column="label" data-label="Importe" className="amount">{money(s.total_cents)}</td>
+              <td role="cell" data-column="label" data-label="Estado">
                 <Status tone={s.status === "completed" ? "teal" : "red"}>
                   {s.status === "completed" ? "Confirmada" : "Anulada"}
                 </Status>
               </td>
-              <td>
+              <td role="cell" data-column="actions">
                 <button
                   className="icon-button"
                   aria-label={"Ver venta " + saleCode(s.id)}
@@ -1922,7 +1995,7 @@ function Sales({
   return (
     <>
       <PageTitle
-        eyebrow="CADA VENTA TIENE SU HISTORIA"
+        eyebrow="Registro de caja"
         title="Historial de ventas"
         description={
           admin
@@ -1930,7 +2003,11 @@ function Sales({
             : "Consulta tus ventas y sus comprobantes internos."
         }
       />
-      <section className="panel">
+      <section className="panel sales-register">
+        <div className="panel-header">
+          <div><h2>Comprobantes internos</h2><p>Filtra por fecha o estado de la operación.</p></div>
+          {data && !loading && !error && <span className="record-count">{data.total} en el registro</span>}
+        </div>
         <div className="table-toolbar">
           <div className="date-filters">
             <label>
@@ -2143,11 +2220,11 @@ function Movements() {
   return (
     <>
       <PageTitle
-        eyebrow="TRAZABILIDAD DE PRINCIPIO A FIN"
+        eyebrow="Bitácora de lotes"
         title="Movimientos de inventario"
         description="Cada entrada, ajuste, venta y devolución tiene un registro."
       />
-      <section className="panel">
+      <section className="panel movement-register">
         <div className="table-toolbar">
           <span className="toolbar-title">
             <Activity size={18} /> Historial de existencias
@@ -2175,42 +2252,42 @@ function Movements() {
         ) : data?.data.length ? (
           <>
             <div className="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Producto / Lote</th>
-                    <th>Operación</th>
-                    <th>Unidades</th>
-                    <th>Stock del lote</th>
-                    <th>Motivo y responsable</th>
-                    <th>Fecha</th>
+              <table className="mobile-records" role="table">
+                <thead role="rowgroup">
+                  <tr role="row">
+                    <th role="columnheader">Producto / Lote</th>
+                    <th role="columnheader">Operación</th>
+                    <th role="columnheader" className="numeric">Unidades</th>
+                    <th role="columnheader" className="numeric">Stock del lote</th>
+                    <th role="columnheader">Motivo y responsable</th>
+                    <th role="columnheader">Fecha</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody role="rowgroup">
                   {data.data.map((m) => (
-                    <tr key={m.id}>
-                      <td>
+                    <tr role="row" key={m.id}>
+                      <td role="cell" data-column="primary">
                         <strong>{m.batch.product.name}</strong>
                         <small className="table-sub">{m.batch.code}</small>
                       </td>
-                      <td>
+                      <td role="cell" data-column="label" data-label="Operación">
                         <Status tone={m.quantity > 0 ? "teal" : "neutral"}>
                           {movementLabel[m.type]}
                         </Status>
                       </td>
-                      <td className={m.quantity > 0 ? "positive" : "negative"}>
+                      <td role="cell" data-column="label" data-label="Unidades" className={`numeric movement-units ${m.quantity > 0 ? "positive" : "negative"}`}>
                         {m.quantity > 0 ? "+" : ""}
                         {m.quantity}
                       </td>
-                      <td>{m.stock_after}</td>
-                      <td>
+                      <td role="cell" data-column="label" data-label="Stock del lote" className="numeric">{m.stock_after}</td>
+                      <td role="cell" data-column="label" data-label="Motivo">
                         {m.reason}
                         <small className="table-sub">
                           {m.user.name}
                           {m.sale_id ? " · " + saleCode(m.sale_id) : ""}
                         </small>
                       </td>
-                      <td>{date(m.created_at)}</td>
+                      <td role="cell" data-column="label" data-label="Fecha">{date(m.created_at)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -2247,9 +2324,9 @@ function AlertPage({
   return (
     <>
       <PageTitle
-        eyebrow="ANTICÍPATE A LO IMPORTANTE"
+        eyebrow="Control de existencias"
         title="Centro de alertas"
-        description="Señales claras para mantener tu botica preparada."
+        description="Prioriza la reposición y revisa qué lotes salen pronto de circulación."
         action={
           <button
             className="button primary"
@@ -2259,7 +2336,7 @@ function AlertPage({
           </button>
         }
       />
-      <div className="alert-summary">
+      <div className="alert-summary" role="group" aria-label="Categorías de alertas">
         <button
           className={tab === "stock" ? "selected" : ""}
           aria-pressed={tab === "stock"}
@@ -2324,24 +2401,24 @@ function AlertPage({
         {tab === "stock" ? (
           d.low_stock.length ? (
             <div className="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Producto</th>
-                    <th>Disponible</th>
-                    <th>Mínimo</th>
-                    <th>Estado</th>
+              <table className="mobile-records" role="table">
+                <thead role="rowgroup">
+                  <tr role="row">
+                    <th role="columnheader">Producto</th>
+                    <th role="columnheader">Disponible</th>
+                    <th role="columnheader">Mínimo</th>
+                    <th role="columnheader">Estado</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody role="rowgroup">
                   {d.low_stock.map((p) => (
-                    <tr key={p.id}>
-                      <td>
+                    <tr role="row" key={p.id}>
+                      <td role="cell" data-column="primary">
                         <ProductName p={p} />
                       </td>
-                      <td className="amount">{p.available_stock ?? 0} uds.</td>
-                      <td>{p.min_stock} uds.</td>
-                      <td>
+                      <td role="cell" data-column="label" data-label="Disponible" className="amount">{p.available_stock ?? 0} uds.</td>
+                      <td role="cell" data-column="label" data-label="Mínimo">{p.min_stock} uds.</td>
+                      <td role="cell" data-column="label" data-label="Estado">
                         <StockBadge p={p} />
                       </td>
                     </tr>
@@ -2357,26 +2434,26 @@ function AlertPage({
           )
         ) : batches.length ? (
           <div className="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Producto</th>
-                  <th>Lote</th>
-                  <th>Vencimiento</th>
-                  <th>Existencias</th>
-                  <th>Estado</th>
+            <table className="mobile-records" role="table">
+              <thead role="rowgroup">
+                <tr role="row">
+                  <th role="columnheader">Producto</th>
+                  <th role="columnheader">Lote</th>
+                  <th role="columnheader">Vencimiento</th>
+                  <th role="columnheader">Existencias</th>
+                  <th role="columnheader">Estado</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody role="rowgroup">
                 {batches.map((b) => (
-                  <tr key={b.id}>
-                    <td>
+                  <tr role="row" key={b.id}>
+                    <td role="cell" data-column="primary">
                       <ProductName p={b.product!} />
                     </td>
-                    <td className="receipt-code">{b.code}</td>
-                    <td>{date(b.expires_at)}</td>
-                    <td>{b.quantity} uds.</td>
-                    <td>
+                    <td role="cell" data-column="label" data-label="Lote" className="receipt-code">{b.code}</td>
+                    <td role="cell" data-column="label" data-label="Vencimiento">{date(b.expires_at)}</td>
+                    <td role="cell" data-column="label" data-label="Existencias">{b.quantity} uds.</td>
+                    <td role="cell" data-column="label" data-label="Estado">
                       <Status tone={tab === "expired" ? "red" : "amber"}>
                         {tab === "expired" ? "Vencido" : "Próximo a vencer"}
                       </Status>
@@ -2414,8 +2491,8 @@ function Reports() {
   return (
     <>
       <PageTitle
-        eyebrow="DATOS QUE AYUDAN A DECIDIR"
-        title="Reportes de tu botica"
+        eyebrow="Análisis de caja"
+        title="Reportes de ventas"
         description="Explora las ventas confirmadas del período que necesitas."
         action={
           <a
@@ -2490,7 +2567,7 @@ function Reports() {
                   </p>
                 </div>
               </div>
-              <Chart data={d.series} />
+              <Chart data={d.series} bars={d.series.length <= 31} />
             </section>
             <div className="dashboard-middle report-bottom">
               <section className="panel">
@@ -2570,8 +2647,8 @@ function Team({ notify }: { notify: (s: string) => void }) {
   return (
     <>
       <PageTitle
-        eyebrow="CADA PERSONA, EL ACCESO CORRECTO"
-        title="Tu equipo"
+        eyebrow="Permisos de operación"
+        title="Equipo y accesos"
         description="Administra los accesos y responsabilidades de Nova Salud."
         action={
           <button className="button primary" onClick={() => setEdit(null)}>
@@ -2579,44 +2656,48 @@ function Team({ notify }: { notify: (s: string) => void }) {
           </button>
         }
       />
-      <section className="panel">
+      <section className="panel team-register">
+        <div className="panel-header">
+          <div><h2>Personal de la botica</h2><p>Roles, estado y acceso al sistema.</p></div>
+          {data && !loading && !error && <span className="record-count">{data.filter((member) => member.active).length} con acceso activo</span>}
+        </div>
         {error ? (
           <ErrorBox message={error} retry={refresh} />
         ) : loading ? (
           <Loading />
-        ) : (
+        ) : data?.length ? (
           <div className="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Integrante</th>
-                  <th>Correo</th>
-                  <th>Rol</th>
-                  <th>Estado</th>
-                  <th />
+            <table className="mobile-records" role="table">
+              <thead role="rowgroup">
+                <tr role="row">
+                  <th role="columnheader">Integrante</th>
+                  <th role="columnheader">Correo</th>
+                  <th role="columnheader">Rol</th>
+                  <th role="columnheader">Estado</th>
+                  <th role="columnheader" />
                 </tr>
               </thead>
-              <tbody>
+              <tbody role="rowgroup">
                 {data?.map((u) => (
-                  <tr key={u.id}>
-                    <td>
+                  <tr role="row" key={u.id}>
+                    <td role="cell" data-column="primary">
                       <div className="team-name">
                         <span className="avatar">{u.name.slice(0, 1)}</span>
                         <strong>{u.name}</strong>
                       </div>
                     </td>
-                    <td>{u.email}</td>
-                    <td>
+                    <td role="cell" data-column="wide" data-label="Correo">{u.email}</td>
+                    <td role="cell" data-column="label" data-label="Rol">
                       <span className="category-tag">
                         {u.role === "admin" ? "Administrador" : "Vendedor"}
                       </span>
                     </td>
-                    <td>
+                    <td role="cell" data-column="label" data-label="Estado">
                       <Status tone={u.active ? "teal" : "neutral"}>
                         {u.active ? "Activo" : "Inactivo"}
                       </Status>
                     </td>
-                    <td>
+                    <td role="cell" data-column="actions">
                       <button
                         className="text-button"
                         onClick={() => setEdit(u)}
@@ -2629,7 +2710,7 @@ function Team({ notify }: { notify: (s: string) => void }) {
               </tbody>
             </table>
           </div>
-        )}
+        ) : <Empty title="No hay integrantes registrados" />}
       </section>
       <div className="permission-grid">
         <div>
@@ -2733,18 +2814,19 @@ function Team({ notify }: { notify: (s: string) => void }) {
     </>
   );
 }
-function Help({ admin }: { admin: boolean }) {
+function Help({ admin, navigate }: { admin: boolean; navigate: (view: View) => void }) {
   return (
     <>
       <PageTitle
-        eyebrow="TU PRIMER RECORRIDO"
-        title="Un espacio fácil de usar."
-        description="Lo esencial para atender con más orden y confianza."
+        eyebrow="Manual del mostrador"
+        title="Guía de uso"
+        description="Sigue el recorrido de un producto, desde el ingreso del lote hasta su venta."
       />
       <div className="help-grid">
         {[
           {
             n: "01",
+            view: "inventory" as const,
             icon: Package,
             title: "Prepara el inventario",
             text: admin
@@ -2753,18 +2835,21 @@ function Help({ admin }: { admin: boolean }) {
           },
           {
             n: "02",
+            view: "pos" as const,
             icon: ShoppingCart,
             title: "Registra una venta",
             text: "Busca productos en Punto de venta, agrégalos al carrito, ajusta cantidades y selecciona el método de pago. Revisa y confirma.",
           },
           {
             n: "03",
+            view: "sales" as const,
             icon: ReceiptText,
             title: "Consulta el detalle",
             text: "En Ventas puedes revisar tus operaciones e imprimir un comprobante interno. El detalle conserva los precios originales.",
           },
           {
             n: "04",
+            view: admin ? ("alerts" as const) : ("pos" as const),
             icon: ShieldCheck,
             title: "Mantén el control",
             text: admin
@@ -2779,6 +2864,9 @@ function Help({ admin }: { admin: boolean }) {
             </div>
             <h2>{c.title}</h2>
             <p>{c.text}</p>
+            <button type="button" className="text-button" onClick={() => navigate(c.view)}>
+              Ir a {labels[c.view].toLowerCase()} <ArrowRight size={16} />
+            </button>
           </section>
         ))}
       </div>
